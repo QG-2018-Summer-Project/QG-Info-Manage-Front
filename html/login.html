@@ -28,19 +28,67 @@
     <!-- < 头部 > -->
     <header>
         <img src="../images/logo/transverse_platform.png">
-        <div>
-        </div>
-        <div>
+        <div class="switch-container">
+            <div id="login-mode">
+                <div class="switch-layer">
+                    <span>登陆</span>
+                </div>
+                <span>登陆</span>
+            </div>
+            <div id="register-mode">
+                <div class="switch-layer">
+                    <span>注册</span>
+                </div>
+                <span>注册</span>
+            </div>
         </div>
     </header>
     <!-- < 中间输入表单那个区域 > -->
     <section>
         <div>
-            <div class="input-container">
+            <div class="login-container mode-container-unrotated">
+                <div class="login-input-container input-container-unrotated">
+                    <label class="login-first-label" for="login-userName">账号</label>
+                    <input type="text" id="login-userName" name="userName" autocomplete="off"/>
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" name="password" autocomplete="off"/>
+                    <button>登陆</button>
+                </div>
             </div>
-            <!-- <div class="register-container"></div> -->
+            <div class="register-container mode-container-rotated">
+                <div class="register-input-container input-container-rotated">
+                    <label for="register-userName">账号</label>
+                    <input type="text" id="register-userName" name="userName" autocomplete="off"/>
+                    <label for="register-name">真实姓名</label>
+                    <input type="text" id="register-name" name="name" autocomplete="off"/>
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" name="password" autocomplete="off"/>
+                    <button>注册</button>
+                </div>
+            </div>
+            <div class="tips transverse-tips login-userName-tip">
+                <div></div>
+            </div>
+            <div class="tips transverse-tips login-password-tip">
+                <div></div>
+            </div>
+            <div class="tips transverse-tips register-userName-tip">
+                <div></div>
+            </div>
+            <div class="tips transverse-tips register-name-tip">
+                <div></div>
+            </div>
+            <div class="tips transverse-tips register-password-tip">
+                <div></div>
+            </div>
         </div>
     </section>
+    <div class="float-layer">
+        <div>
+            <span>提示</span>
+            <button>确定</button>
+        </div>
+    </div>
     <!-- < 引入该页面的js文件 > -->
     <script src="../srcipts/login.js"></script>
 </body>

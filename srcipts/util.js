@@ -1,5 +1,4 @@
-window.ip = '192.168.31.248';
-window.currentDate = '2017-02-01 ';
+window.ip = '192.168.1.104';
 
 
 /**
@@ -45,6 +44,15 @@ var EventUtil = {
         }
     })()
 }; 
+
+/**
+ * @description 限制输入框的最大输入字数
+ * @param {inputDom} inputDom 输入框节点
+ * @param {Number} length 限制的长度
+ */
+function limitLength(inputDom, length) {
+    return (inputDom.value.length > length ? inputDom.value.slice(0, length) : inputDom.value);
+}
 
 
 /**
@@ -100,12 +108,6 @@ function throttle(method, context) {
     method.tId = setTimeout(function() {
         method.call(context);
     }, 100);
-}
-
-function searchCommit() {
-    var key = encodeURI($('#search-input')[0].value);
-    // var ncodeURI(key);
-    window.location.href = 'search.html?key=' + key + '&userID=' + window.userID;
 }
 
 /**
