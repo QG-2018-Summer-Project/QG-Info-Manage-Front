@@ -266,3 +266,81 @@ var cookieUtil = {
     }
 
 };
+
+function ajax() {
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/user/register',
+        type: 'post',
+        data: JSON.stringify(jsonObj),
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        success: function(responseObj) {
+            switch(responseObj.status) {
+                case '1': {
+                    showMessage('注册成功');
+                    break;
+                }
+
+                case '2': {
+                    showMessage('该账户已经被注册了');
+                    break;
+                }
+
+                case '7': {
+                    showMessage('服务器发生内部错误');
+                    break;
+                }
+
+                case '9': {
+                    showMessage('发送数据格式错误');
+                    break;
+                }
+            }
+            
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败')
+        }
+    });
+}
+
+/**
+ * 封装异步方法
+ */
+var AjaxUtil = {
+    post: function (url, data, dataType, contentType, successCallback, errorCallback) {
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: dataType,
+            processData: false,
+            contentType: contentType,
+            success: successCallback(),
+            error: errorCallback()
+        });
+    },
+
+    get: function(url, data, dataType, contentType, successCallback, errorCallback) {
+        $.ajax({
+            url: url,
+            type: 'get',
+            data: JSON.stringify(data),
+            dataType: dataType,
+            processData: false,
+            contentType: contentType,
+            success: successCallback(),
+            error: errorCallback()
+        });
+    }
+};
+
+/**
+ * 打印函数
+ * @param {*} obj 
+ */
+function print(obj) {
+    console.log(obj);
+}
