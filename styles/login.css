@@ -31,9 +31,11 @@ section>div>div {
     height: 642px;
     top: 0;
     left: 0;
+    -moz-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 section  * {
+    -ms-transition: all 1s ease;
     transition: all 1s ease;
 }
 .login-container {
@@ -95,8 +97,8 @@ section  * {
     text-indent: 10px;
     color: #424242;
 }
-.login-input-container input:focus, .register-container input:focus {
-    border: 4px solid rgba(61, 144, 245);
+.login-input-container input:focus,.register-container input:focus {
+    border: 4px solid #3D90F5;
 }
 .login-input-container label, .register-container label {
     display: block;

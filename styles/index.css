@@ -134,9 +134,16 @@ body {
     overflow: auto;
 }
 .part-left-main {
-    height: 1000px;
+    position: relative;
+    height: 100%;
     width: 1000px;
     margin: 32px auto;
+}
+.part-left-main::after {
+    content: "";
+    clear: both;
+    display: block;
+    visibility: hidden;
 }
 
 /* 奖项列表 */
@@ -204,6 +211,60 @@ body {
     padding: 0 5px;
 }
 
+/* 成员信息列表 */
+
+.member-information-list-container {
+    /* position: absolute; */
+    top: 12px;
+    left: 0;
+    width: 864px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.member-information-list-container::after {
+    display: block;
+    content: "";
+    clear: both;
+    visibility: hidden;
+}
+.member-information-list-container li {
+    position: relative;
+    float: left;
+    cursor: pointer;
+    width: 180px;
+    height: 270px;
+    background-color: bisque;
+    margin-top: 32px;
+    margin-left: 48px;
+    overflow: hidden;
+}
+.member-information-list-container li:nth-child(4n+1) {
+    margin-left: 0;
+}
+.member-information-list-container li img {
+    /* width:  */
+}
+.member-information-list-container li div {
+    position: absolute;
+    width: 100%;
+    height: 64px;
+    bottom: -32px;
+    left: 0;
+    transition: bottom .5s ease;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.show-member-group {
+    bottom: 0!important;
+}
+.member-information-list-container li span {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: #424242;
+    line-height: 32px;
+    width: 100%;
+    height: 32px;
+}
 /* 右边的操作面板 */
 
 .show-panel-button-container {

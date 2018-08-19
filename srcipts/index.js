@@ -63,3 +63,31 @@
         firstMenu.removeChild(e.target.parentNode);
     }
 })();
+
+(function() {
+    var i;
+    /**
+     * @description 显示成员的组别
+     */
+    function showInformationGroup(eventType) {
+        console.log(event)
+        if (eventType == 'mouseover') {
+            if (ClassUtil.hasClass($(this).children('div')[0], 'show-member-group') == false) {
+                ClassUtil.addClass($(this).children('div')[0], 'show-member-group')
+            }
+        } else {
+            if (ClassUtil.hasClass($(this).children('div')[0], 'show-member-group') == true) {
+                ClassUtil.removeClass($(this).children('div')[0], 'show-member-group')
+            }
+        }
+        
+    }
+    for (i = 0; i < $('.member-information-list-container li').length; i++) {
+        $('.member-information-list-container li')[i].onmouseover = function(event) {
+            showInformationGroup.call(this, event.type);
+        }
+        $('.member-information-list-container li')[i].onmouseleave = function(event) {
+            showInformationGroup.call(this, event.type);
+        }
+    }
+})()
