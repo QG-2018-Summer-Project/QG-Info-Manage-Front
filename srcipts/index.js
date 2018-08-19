@@ -191,6 +191,10 @@
     function informationListClickListen(event) {
 
     }
+    EventUtil.addHandler($('.member-information-list-container')[0], 'click', informationListClickListen);
 })()
 
-function informationDetailRequest()
+/**
+ * @description 查看成员的具体信息的请求函数
+ */
+function informationDetailRequest() {}
