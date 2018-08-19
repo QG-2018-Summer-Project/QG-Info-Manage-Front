@@ -25,7 +25,59 @@
     <script src="../srcipts/jquery-3.3.1.min.js"></script>
 </head>
 <body>
-    
+    <div class="root">
+        <header class="root-header">
+            <div class="logo-container">
+                <a href="javascript:"><img src="../images/logo/transverse_platform.png" alt=""></a>
+            </div>
+            <div class="search-input-container">
+                <input type="text" placeholder="搜索">
+                <a href="javascript:">
+                    <img src="../images/icon/icon_search_normal.png" >
+                </a>
+            </div>
+            <ul class="header-ul">
+                <li><a href="javascript:">奖项</a></li>
+                <li><a href="javascript:">成员信息</a></li>
+                <li><a href="javascript:">导入信息</a></li>
+            </ul>
+            <a href="javascript:" id="user-name">用户名</a>
+        </header>
+        <nav class="root-nav">
+            <ul class="first-menu"></ul>
+        </nav>
+        <main class="root-main">
+            <section class="part-left">
+                <main class="part-left-main">
+                    <!-- 每一个功能展示区域 -->
+                    <ul class="prize-container">
+                        <li>
+                            <div class="prize-img-container">
+                                <img src="" class="prize-img">
+                            </div>
+                            <div class="prize-info-container">
+                                <h1 class="prize-name">第十一届挑战杯“智慧城市专项赛”金奖</h1>
+                                <p class="prize-time-container">获奖时间：<span class="prize-time">2018-02-02</span></p>
+                                <p>获奖成员：<span class="prize-people">陈子锋</span></p>                                
+                            </div>
+                        </li>
+                    </ul>
+                </main>
+            </section>
+            <section class="part-right">
+                <div class="show-panel-button-container">
+                    <a href="javascript:" id="show-panel-button">
+                        <img src="../images/icon/arrow_left_blue.png" id="arrow">
+                        <span>筛选条件</span>
+                    </a>
+                    <!-- 右边面板的展示区域 -->
+                    <main>
+                        
+                    </main>
+                </div>
+            </section>
+        </main>
+    </div>
     <!-- < 引入该页面的js文件 > -->
     <script src="../srcipts/index.js"></script>
 </body>

@@ -12,6 +12,7 @@ a {
     text-decoration:none;
     resize: none;
     outline: none;
+    color: #000;
 } 
 em {
     font-style:normal;
