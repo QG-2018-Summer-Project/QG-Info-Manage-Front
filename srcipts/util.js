@@ -1,4 +1,4 @@
-window.ip = '192.168.1.104';
+window.ip = '192.168.1.102';
 
 
 /**
@@ -318,8 +318,8 @@ var AjaxUtil = {
             dataType: dataType,
             processData: false,
             contentType: contentType,
-            success: successCallback(),
-            error: errorCallback()
+            success: successCallback,
+            error: errorCallback
         });
     },
 

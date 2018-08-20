@@ -167,31 +167,109 @@
     /**
      * 初始化奖项容器
      */
-    function initprizeContainer() {
-        var prizeContainer = document.getElementsByClassName('prize-container')[0],
+    window.prizeIndex = 0;
 
-        prizeModel = `<li>
+    (function initprizeContainer() {
+        var prizeUl = document.getElementsByClassName('prize-container')[0].getElementsByTagName('ul')[0];
+
+        window.URL = 'http://' + ip +':8080/qginfosystem/awardinfo/queryawardinfo',
+            data = {
+                page: 0, 
+                awardTime: "",
+                awardLevel: "",
+                rank: ""
+            };
+        
+        AjaxUtil.post(URL, data, 'json', 'application/json', successCallback, errorCallback);
+            
+        function successCallback(r) {
+            if (r.status === '1') {
+                console.log(r);
+                var num = r.awardInfoList.length;
+                // 清空ul
+                prizeUl.innerHTML = '';
+                createPrize(num, r.awardInfoList);
+
+            }
+        }
+        function errorCallback() {
+            alert();
+        }
+    })();
+
+    
+})();
+
+
+
+function queryMorePrize() {
+    AjaxUtil.post(URL, queryPrizeData, 'json', 'application/json', successCallback, errorCallback);
+        
+    function successCallback(r) {
+        if (r.status === '1') {
+            console.log(r);
+            var num = r.awardInfoList.length;
+            createPrize(num, r.awardInfoList);
+            queryPrizeData.page++;
+        }
+    }
+    function errorCallback() {
+        alert();
+    }
+}
+
+/**
+ * 根据数量创建奖项模板
+ * @param {int} num 
+ */
+function createPrize(num, data) {
+    var prizeContainer = document.getElementsByClassName('prize-container')[0],
+        prizeUl = prizeContainer.getElementsByTagName('ul')[0],
+        prizeModel = `
                         <a href="javascript:">
                             <div class="prize-img-container">
                                 <img src="" class="prize-img">
                             </div>
                             <div class="prize-info-container">
                                 <h1 class="prize-name"></h1>
-                                <p class="prize-time-container"><span class="prize-time">2018-02-02</span></p>
+                                <p class="prize-time-container"><span class="prize-time"></span></p>
                                 <p><span class="prize-people"></span></p>                                
                             </div>
                         </a>
-                    </li>`;
-        //请求后
-        
-    }
-    /**
-     * 点击某一个选项时
-     */
-    function selectPrize() {
+                    `,
+    docFragment = document.createDocumentFragment();
+    for (let i = 0; i < num; i++) {
 
-    }
-})();
+        newNode = document.createElement('li');
+        newNode.innerHTML = prizeModel;
+
+        docFragment.appendChild(newNode);
+    } 
+    prizeUl.appendChild(docFragment);
+
+    (function addPrize(data) {
+        var prizeLi = prizeUl.getElementsByTagName('li'),
+            prizeImg = prizeUl.getElementsByClassName('prize-img'),
+            prizeName = prizeUl.getElementsByClassName('prize-name'),
+            prizeTime = prizeUl.getElementsByClassName('prize-time'),
+            prizePeople = prizeUl.getElementsByClassName('prize-people'),
+            imgURL;
+
+        for (let i = prizeIndex, j = 0; i <  prizeIndex + num; i++, j++) {
+            imgURL = 'http://' + ip + ':8080/qginfosystem/img/' + data[j].url;
+            prizeLi[i].setAttribute('data-id', data[j].awardId);
+            prizeImg[i].setAttribute('src', imgURL);
+            prizeName[i].innerHTML = data[j].awardName;
+            prizeTime[i].innerHTML = data[j].awardTime;
+            prizePeople[i].innerHTML = data[j].joinStudent;
+
+        }
+
+    })(data);
+    prizeIndex += num;
+}
+
+
 
 (function() {
     var selectPlugin = document.getElementsByClassName('select-plugin'),
@@ -246,10 +324,34 @@
         dataOptions.appendChild(docFragment);
     })();
 
-    EventUtil.addHandler(commitButton, 'click', sendData);
-    // 发送请求
-    function sendData() {
+    EventUtil.addHandler(commitButton, 'click', queryPrizeByOptions);
 
+    // 发送请求
+    function queryPrizeByOptions() {
+        var prizeUl = document.getElementsByClassName('prize-container')[0].getElementsByTagName('ul')[0];
+            optionsSpan = document.getElementsByClassName('option'),
+            options = [];
+
+        for (let i = 0; i < optionsSpan.length; i++) {
+            if (optionsSpan[i].innerHTML === '所有') {
+                options[i] = '';
+            } else {
+                options[i] = optionsSpan[i].innerHTML;
+            }
+        }
+
+        queryPrizeData.page = 0;
+        queryPrizeData.awardTime =  options[0];
+        queryPrizeData.awardLevel = options[1];
+        queryPrizeData.rank = options[2];
+        prizeUl.innerHTML = '';
+        queryMorePrize();
     }
 })();
 
+var queryPrizeData = {
+    page: 0,
+    awardTime:"",
+    awardLevel:"",
+    rank:""
+};

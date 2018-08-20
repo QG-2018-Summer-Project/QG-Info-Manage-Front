@@ -52,20 +52,11 @@
                     <!-- 所获奖项容器 -->
                     <div class="part prize-container">
                         <ul>
-                            <li>
-                               <a href="javascript:">
-                                    <div class="prize-img-container">
-                                        <img src="" class="prize-img">
-                                    </div>
-                                    <div class="prize-info-container">
-                                        <h1 class="prize-name">第十一届挑战杯“智慧城市专项赛”金奖</h1>
-                                        <p class="prize-time-container">获奖时间：<span class="prize-time">2018-02-02</span></p>
-                                        <p>获奖成员：<span class="prize-people">陈子锋</span></p>                                
-                                    </div>
-                               </a>
-                            </li>
                             
                         </ul>
+                        <div>
+                        
+                        </div>
                     </div>
                     <!-- 成员信息容器 -->
                     <div class="part menber-container">
@@ -76,8 +67,75 @@
                         导出和导入容器
                     </div>
                     <!-- 奖项的操作页面 -->
-                    <div class="part prizeDetailContainer">
-                        奖项的操作页面
+                    <div class="part prizeDetailContainer" >
+                        <div class="prizeDetailContainer-left">
+                            <div class="prize-detail-img-container">
+                                <img src="" id="prize-detail-img">
+                            </div>
+                            <div class="introduction-container">
+                                 <textarea id="introduction" cols="30" rows="10"></textarea>
+                            </div>
+                        </div>
+                        <div class="prizeDetailContainer-right">
+                            <ul>
+                                <li>
+                                    <label for="">奖项名称</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">奖项编号</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">获奖时间</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">获奖项目</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">获奖部门</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">获奖级别</label>
+                                    <div class="prize-input-container" style="margin-right: 10px;">
+                                        <input type="text" style="width: 213px;">
+                                    </div>
+                                    <label for="">获奖等级</label>
+                                    <div class="prize-input-container" >
+                                        <input type="text" style="width: 213px;">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">指导老师</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="">参赛学生</label>
+                                    <div class="prize-input-container">
+                                        <input type="text">
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="prize-button-container">
+                                <button>修改</button>
+                                <button>删除</button>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </section>
@@ -107,7 +165,7 @@
                         <div class="prize-select-container">
                             <span>获奖级别</span>
                             <div class="select-plugin" tabindex>
-                                <span>所有</span>
+                                <span class="option">所有</span>
                                 <button class="prize-select-button"></button>
                             <div class="prize-option-container">
                                     <ul>
@@ -123,7 +181,7 @@
                         <div class="prize-select-container">
                             <span>获奖等级</span>
                             <div class="select-plugin" tabindex>
-                                <span>所有</span>
+                                <span class="option">所有</span>
                                 <button class="prize-select-button"></button>
                                 <div class="prize-option-container">
                                     <ul>
@@ -152,7 +210,7 @@
                     </div>
                     <!-- 奖项操作面板 -->
                     <div class="panel">
-                        奖项操作面板
+                        
                     </div>
                 </div>
             </section>
