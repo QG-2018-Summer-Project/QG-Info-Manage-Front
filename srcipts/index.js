@@ -27,6 +27,7 @@
     for (let i = 0; i < headerLi.length; i++) {
         EventUtil.addHandler(headerLi[i], 'click', headerLicallback);
     }
+
     function headerLicallback(e) {
         var content = e.target.innerHTML,
             list = firstMenu.getElementsByTagName('a');
@@ -63,42 +64,49 @@
         docFragment.appendChild(li);
         firstMenu.appendChild(docFragment);
         EventUtil.addHandler(button, 'click', closePartCallback);
-        EventUtil.addHandler(li, 'click', selectPart);
+        EventUtil.addHandler(li, 'click',Licallback);
     } 
+    /**
+     * 点击某个li的时的callback函数
+     * @param {Event} e 
+     */
+    function Licallback(e) {
+        e.stopPropagation();
+        var content = e.target.innerHTML;
+        switchPartContainer(content);
+    }
     /**
      * 关闭某个菜单
      * @param {Event} e 
      */
     function closePartCallback(e) {
-        var thisLi = e.target.parentNode,
-            lastLi = thisLi.previousSibling,
-            thisPart = document.getElementsByClassName('show')[0];
-            
-        if (lastLi != null) {
-            content = lastLi.getElementsByTagName('a')[0].innerHTML;
-            print(content);
-            switchPartContainer(content);
-        }
-        // 关闭当前的部分
-        ClassUtil.removeClass(thisPart, 'show');
-        // 解除事件绑定
-        EventUtil.removeHandler(e.target, 'click', closePartCallback);
-        firstMenu.removeChild(e.target.parentNode);
         // 阻止冒泡
         e.stopPropagation();
-    }
-    /**
-     * 点击导航栏显示某个菜单
-     * @param {Event} e 
-     */
-    function selectPart(e) {
-        var content = e.target.innerHTML;
-        switchPartContainer(content);
-        print(e.currentTarget);
-        // ClassUtil.addClass(li, 'first-menu-li-acitve');
-        EventUtil.removeHandler(e.target, 'click', selectPart);
-    }
 
+        var thisLi = e.target.parentNode,
+            lastLi = thisLi.previousSibling,
+            nextLi = thisLi.nextSibling,
+            thisPart = document.getElementsByClassName('show')[0];
+        
+        // 关闭当前的part
+        ClassUtil.removeClass(thisPart, 'show');
+        // 判断前面是否还有菜单
+        if (lastLi != null) {
+            content = lastLi.getElementsByTagName('a')[0].innerHTML;
+            switchPartContainer(content);
+        }
+        // 判断后面是否还是有菜单
+        if (nextLi != null) {
+            content = nextLi.getElementsByTagName('a')[0].innerHTML;
+            switchPartContainer(content);
+        }
+        // 解除事件绑定
+        EventUtil.removeHandler(e.target, 'click', closePartCallback);
+
+        EventUtil.removeHandler(thisLi, 'click', Licallback);
+        // 删除这个list
+        firstMenu.removeChild(e.target.parentNode);
+    }
     /**
      * 切换所有的面板函数
      * 通过添加或者删除一个类show来实现
@@ -114,13 +122,25 @@
             '导入导出': 2,
             '编辑奖项': 3
         };
-        
-        var everyPart = document.getElementsByClassName('part');
+                
+        var everyPart = document.getElementsByClassName('part'),
+            li = firstMenu.getElementsByTagName('li'),
+            thisContent; 
+
 
         for (let i = 0; i < everyPart.length; i++) {
             ClassUtil.removeClass(everyPart[i], 'show');
         }
+        
         ClassUtil.addClass(everyPart[index[content]], 'show');
+
+        for (let i = 0; i < li.length; i++) {
+            thisContent = li[i].getElementsByTagName('a')[0].innerHTML;
+            ClassUtil.removeClass(li[i], 'first-menu-li-acitve');
+            if (thisContent === content) {
+                ClassUtil.addClass(li[i], 'first-menu-li-acitve');
+            }
+        }
     }
     /**
      * 隐藏某个容器
