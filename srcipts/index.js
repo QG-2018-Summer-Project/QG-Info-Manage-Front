@@ -157,44 +157,201 @@
     }
 })();
 
+/**
+ * @description 打开成员列表的块的时候启动函数，暂未命名
+ */
+(function(){
+    var page = 0;
 
-(function() {
-    var i;
+    function listPageInit() {
+        $('.member-information-list-container')[0].innerHTML = '';
+        informationListRequest('', '');
+    }
+
     /**
-     * @description 显示成员的组别
+     * @description 对列表区进行添加元素
+     * @param {JSON Object} jsonObj 传回的json对象
+     */
+    function informationListRenew(jsonObj) {
+        var container = $('.member-information-list-container')[0],
+            i,
+            userinfoArr = jsonObj.userInfo;
+        
+        for (i = 0; i < userinfoArr.length; i++) {
+            container.innerHTML += '<li userinfoId=' + userinfoArr[i].userinfoId + '>'
+                                + '<img src="../images/logo/studio_logo_information.png" url='+ userinfoArr[i].url +'>'  
+                                + '<div>'
+                                + '<span>'+ userinfoArr[i].name +'</span>'
+                                + '<span>' + userinfoArr[i].grade + '级' + userinfoArr[i].group + '组</span>'
+                                + '</div>'
+                                + '</li>'
+        }
+    }
+
+    
+
+    /**
+     * @description 成员列表展示的请求函数
+     * @param {String} group 组别
+     * @param {String} grade 年级
+     * @param {String} page 页数
+     */
+    function informationListRequest(group, grade) {
+        var jsonObj = {};
+
+        jsonObj.grade = grade;
+        jsonObj.group = group;
+        jsonObj.page = page;
+
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/getuserinfo',
+            type: 'post',
+            data: JSON.stringify(jsonObj),
+            dataType: 'json',
+            processData: false,
+            contentType: 'application/json',
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        showMessage('注册成功');
+                        // 请求完毕后统一加一页
+                        page++;
+                        break;
+                    }
+
+                    case '2': {
+                        showMessage('该账户已经被注册了');
+                        break;
+                    }
+
+                    case '7': {
+                        showMessage('服务器发生内部错误');
+                        break;
+                    }
+
+                    case '9': {
+                        showMessage('发送数据格式错误');
+                        break;
+                    }
+                }
+                
+            },
+            error: function() {
+                // 请求失败时要干什么
+                showMessage('请求失败')
+            }
+        });
+    }
+})();
+
+/**
+ * @description 对成员列表添加事件监听，在页面渲染完毕后添加事件监听，一直到程序结束
+ */
+(function() {
+    /**
+     * @description 显示或者隐藏组员的组别
      */
     function showInformationGroup(eventType) {
+        // 当鼠标在这个列表的上方的时候，显示组别
         if (eventType == 'mouseover') {
             if (ClassUtil.hasClass($(this).children('div')[0], 'show-member-group') == false) {
                 ClassUtil.addClass($(this).children('div')[0], 'show-member-group')
             }
         } else {
+            // 当鼠标在这个列表的某一项上方离开的时候，隐藏组别
             if (ClassUtil.hasClass($(this).children('div')[0], 'show-member-group') == true) {
                 ClassUtil.removeClass($(this).children('div')[0], 'show-member-group')
             }
         }
         
     }
-    // 添加鼠标事件的监听
-    for (i = 0; i < $('.member-information-list-container li').length; i++) {
-        $('.member-information-list-container li')[i].onmouseover = function(event) {
-            showInformationGroup.call(this, event.type);
+
+    /**
+     * @description 鼠标移动到列表或者鼠标离开列表时候的监听事件函数
+     * @param {object} event 鼠标监听事件对象
+     */
+    function infoListConMousemoveListen(event) {
+        // 当鼠标事件为在这个块上边的时候
+        if (event.type == 'mouseover') { 
+            if (event.target.tagName == 'LI') {
+                showInformationGroup.call(event.target, event.type);
+            } else if (typeof $(event.target).parents('li')[0] != 'undefined'
+                      && $(event.target).parents('li')[0].tagName == 'LI') {
+                showInformationGroup.call($(event.target).parents('li')[0], event.type);
+            }
         }
-        $('.member-information-list-container li')[i].onmouseleave = function(event) {
-            showInformationGroup.call(this, event.type);
+
+        // 当鼠标事件为离开的时候
+        if (event.type == 'mouseout') {
+            if (event.target.tagName == 'LI') {
+                showInformationGroup.call(event.target, event.type);
+            } else if (typeof $(event.target).parents('li')[0] != 'undefined' 
+                      && $(event.target).parents('li')[0].tagName == 'LI') {
+                showInformationGroup.call($(event.target).parents('li')[0], event.type);
+            }
         }
     }
+
     /**
      * @description 对个人信息查看表的监听
      * @param {object} event 事件监听对象
      */
     function informationListClickListen(event) {
-
+        var containerTag = null;
+        if (event.target.tagName == 'LI') {
+            containerTag = event.target;
+        } else {
+            containerTag = $(event.target).parents('li')[0];
+        }
+        informationDetailRequest(containerTag.getAttribute('userinfoId'));
     }
     EventUtil.addHandler($('.member-information-list-container')[0], 'click', informationListClickListen);
-})()
+    EventUtil.addHandler($('.member-information-list-container')[0], 'mouseover', infoListConMousemoveListen);
+    EventUtil.addHandler($('.member-information-list-container')[0], 'mouseout', infoListConMousemoveListen);
+})();
 
 /**
  * @description 查看成员的具体信息的请求函数
  */
-function informationDetailRequest() {}
+function informationDetailRequest(userinfoId) {
+    var jsonObj = {};
+
+    jsonObj.userinfoId = userinfoId;
+
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/getuserinfo',
+        type: 'post',
+        data: JSON.stringify(jsonObj),
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        success: function(responseObj) {
+            switch(responseObj.status) {
+                case '1': {
+                    showMessage('注册成功');
+                    break;
+                }
+
+                case '2': {
+                    showMessage('该账户已经被注册了');
+                    break;
+                }
+
+                case '7': {
+                    showMessage('服务器发生内部错误');
+                    break;
+                }
+
+                case '9': {
+                    showMessage('发送数据格式错误');
+                    break;
+                }
+            }
+            
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败')
+        }
+    });
+}
