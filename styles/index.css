@@ -172,7 +172,7 @@ body {
 /* 奖项列表 */
 
 .prize-container {
-    display: none;
+    
 }
 .part {
     display: none;
@@ -235,6 +235,7 @@ body {
     overflow: hidden;
     transition: width .5s;
     will-change: width;
+    background-color: #fff;
 }
 .show-part-right {
     width: 480px;
