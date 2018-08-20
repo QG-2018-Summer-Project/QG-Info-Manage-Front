@@ -68,11 +68,11 @@
                         </ul>
                     </div>
                     <!-- 成员信息容器 -->
-                    <div class="part">
+                    <div class="part menber-container">
                         成员信息容器
                     </div>
                     <!-- 导出和导入容器 -->
-                    <div class="part">
+                    <div class="part file-container">
                         导出和导入容器
                     </div>
                     <!-- 奖项的操作页面 -->
@@ -87,23 +87,73 @@
                         <img src="../images/icon/arrow_left_blue.png" id="arrow">
                         <span>筛选条件</span>
                     </a>
-                    <!-- 右边面板的展示区域 -->
-                    <main>
-                        
-                    </main>
                 </div>
-                <!-- 右边的操作面板 -->
-                <!-- 奖项条件查询面板 -->
-                <div class="panel">
+                <!-- 右边面板的展示区域 -->
+                <div class="panel-container">
+                    <!-- 奖项条件查询面板 -->
+                    <div class="panel prize-select-panel">
+                        <div class="prize-select-container">
+                            <span>获奖年份</span>
+                            <div class="select-plugin" tabindex>
+                                <span class="option">所有</span>
+                                <button class="prize-select-button"></button>
+                                <div class="prize-option-container">
+                                    <ul id="date-options">
+                                        <li>所有</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prize-select-container">
+                            <span>获奖级别</span>
+                            <div class="select-plugin" tabindex>
+                                <span>所有</span>
+                                <button class="prize-select-button"></button>
+                            <div class="prize-option-container">
+                                    <ul>
+                                        <li>所有</li>
+                                        <li>省级</li>
+                                        <li>市级</li>
+                                        <li>校级</li>
+                                        <li>学院级</li>
+                                    </ul>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="prize-select-container">
+                            <span>获奖等级</span>
+                            <div class="select-plugin" tabindex>
+                                <span>所有</span>
+                                <button class="prize-select-button"></button>
+                                <div class="prize-option-container">
+                                    <ul>
+                                        <li>所有</li>
+                                        <li>一等奖</li>
+                                        <li>二等奖</li>
+                                        <li>三等奖</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-search-prize-container">
+                            <a href="javascript:" id="commit-search-prize-button">确认</a>
+                            <div class="a-hover">
 
-                </div>
-                <!-- 奖项操作面板 -->
-                <div class="panel">
-               
-                </div>
-                 <!-- 成员管理操作面板 -->
-                <div class="panel">
-
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 成员管理操作面板 -->
+                    <div class="panel">
+                        成员管理操作面板
+                    </div>
+                    <!-- 导出和导入操作面板 -->
+                    <div class="panel">
+                        导出和导入操作面板
+                    </div>
+                    <!-- 奖项操作面板 -->
+                    <div class="panel">
+                        奖项操作面板
+                    </div>
                 </div>
             </section>
         </main>

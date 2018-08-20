@@ -1,20 +1,39 @@
 /**
- * 显示右面板功能
+ * 初始化右操作面板功能
  */
 (function() {
     var showPanelButton = document.getElementById('show-panel-button'),
         text = showPanelButton.getElementsByTagName('span')[0],
-        partRight = document.getElementsByClassName('part-right')[0];
+        partRight = document.getElementsByClassName('part-right')[0],
+        panel = document.getElementsByClassName('panel');
 
-    EventUtil.addHandler(showPanelButton, 'click', function() {
+    EventUtil.addHandler(showPanelButton, 'click', fn);
+
+    function fn() {    
         if (ClassUtil.hasClass(partRight, 'show-part-right')) {
             ClassUtil.removeClass(partRight, 'show-part-right');
             text.innerHTML = '筛选条件';
         } else {
             ClassUtil.addClass(partRight, 'show-part-right');
             text.innerHTML = '收起';
+
+            for (let i = 0; i < panel.length; i++) {
+                ClassUtil.removeClass(panel[i], 'show');
+            }
+    
+            var partLeft = document.getElementsByClassName('part-left-main')[0],
+                thisPart =  partLeft.getElementsByClassName('show')[0],
+                index;
+
+            if (typeof(thisPart) === 'undefined') {
+                // 展示初始化的页面
+                
+            } else {
+                index = $(thisPart).index();
+                ClassUtil.addClass(panel[index], 'show');
+            }
         }
-    });
+    }
 })();
 
 /**
@@ -122,11 +141,12 @@
             '导入导出': 2,
             '编辑奖项': 3
         };
-                
+
         var everyPart = document.getElementsByClassName('part'),
             li = firstMenu.getElementsByTagName('li'),
+            partRight = document.getElementsByClassName('part-right')[0],
             thisContent; 
-
+            
 
         for (let i = 0; i < everyPart.length; i++) {
             ClassUtil.removeClass(everyPart[i], 'show');
@@ -141,12 +161,8 @@
                 ClassUtil.addClass(li[i], 'first-menu-li-acitve');
             }
         }
-    }
-    /**
-     * 隐藏某个容器
-     */
-    function hidePartContainer(index) {
-        
+        //关闭操作面板
+        ClassUtil.removeClass(partRight, 'show-part-right');
     }
     /**
      * 初始化奖项容器
@@ -173,6 +189,66 @@
      * 点击某一个选项时
      */
     function selectPrize() {
+
+    }
+})();
+
+(function() {
+    var selectPlugin = document.getElementsByClassName('select-plugin'),
+        selectButton = document.getElementsByClassName('prize-select-button'),
+        commitButton = document.getElementById('commit-search-prize-button');
+
+    for (let i = 0; i < selectButton.length; i++) {
+        EventUtil.addHandler(selectButton[i], 'click', callback);
+    }
+
+    function callback(e) {
+        e.stopPropagation();
+        var thisPlugin = e.target.parentNode;
+            li = thisPlugin.getElementsByTagName('li');
+            option = thisPlugin.getElementsByTagName('span')[0];
+
+        
+        // 防止重复打开下拉项
+        for (let i = 0; i < selectPlugin.length; i++) {
+            if (ClassUtil.hasClass(selectPlugin[i], 'show-option-container')) {
+                closeOption(selectPlugin[i]);
+            }
+        }
+
+        ClassUtil.toggleClass(thisPlugin, 'show-option-container');
+
+        $(li).on('click', function() {
+            option.innerHTML = this.innerHTML;
+            closeOption(thisPlugin);
+        });
+    }
+
+    // 关闭下拉栏
+    function closeOption(obj) {
+        ClassUtil.removeClass(obj, 'show-option-container');
+    }
+
+    // 给日历下拉框添加年份
+    (function addDateOptions() {
+        var dataOptions = document.getElementById('date-options'),
+        thisYear = new Date().getFullYear(),
+        docFragment = document.createDocumentFragment(),
+        li, text;
+
+        for (let i = 2007; i <= thisYear; i++) {
+            li = document.createElement('li');
+            text = document.createTextNode(i);
+            li.appendChild(text);
+            docFragment.appendChild(li);
+        }
+
+        dataOptions.appendChild(docFragment);
+    })();
+
+    EventUtil.addHandler(commitButton, 'click', sendData);
+    // 发送请求
+    function sendData() {
 
     }
 })();
