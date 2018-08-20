@@ -239,12 +239,15 @@ body {
     height: 100%;
     width: 48px;
     overflow: hidden;
-    transition: width .5s;
+    transition: width .5s ease;
     will-change: width;
     background-color: #fff;
 }
+
+/* 展示操作面板 */
+
 .show-part-right {
-    width: 480px;
+    width: 400px;
 }
 .show-part-right .show-panel-button-container {
     height: 30px;
@@ -323,6 +326,9 @@ body {
     /* background-color:  */
 }
 
+.show-part-right .panel {
+    opacity: 1;
+}
 /* 右边的操作面板 */
 
 .show-panel-button-container {
@@ -338,9 +344,135 @@ body {
     height: 21px;
     padding: 5px 0;
 }
-.show-panel {
-    
+/* 每一个操作面板的左右外边距为48 */
+.panel {
+    height: auto;
+    margin: 0 auto;
+    /* overflow: hidden; */
+    opacity: 0;
+    display: none;
 }
+
+/* 筛选奖项操作面板 */
+
+.prize-select-panel {
+    width: 300px;
+    font-size: 1.2em;
+    color: #3d90f5;
+    height: 500px;
+    text-align: center; 
+    position: relative;
+    margin-top: 75px;
+}
+.prize-select-container {
+    width: 100%;
+    margin: 20px auto;
+}
+
+/* 选项插件 */
+
+.select-plugin {
+    height: 32px;
+    width: 150px;
+    display: inline-block;
+    border: 2px solid #3d90f5;
+    border-radius: 5px;
+    vertical-align: middle;
+    margin-left: 25px;
+    line-height: 32px;
+    position: relative;
+}
+.select-plugin span {
+    font-size: .9em;
+}
+.prize-option-container {
+    height: 130px;
+    width: 148px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 2px solid #dcdcdc;
+    position: absolute;
+    top: 0px;
+    z-index: -2;
+    border-radius: 5px;
+    transition: transform .5s, opacity .3s;
+    opacity: 0;
+}
+.prize-option-container ul {
+    height: 145px;
+    width: 163px;
+    overflow: scroll;
+}
+.show-option-container .prize-option-container {
+    transform: translateY(36px);
+    z-index: 2;
+    opacity: 1;
+}
+.select-plugin li {
+    height: auto;
+    width: 148px;
+    padding: 0px 0;
+    font-size: .9em;
+    text-align: center;
+    color: #000;
+    cursor: pointer;
+}
+.select-plugin li:hover {
+    background: #3d90f5;
+    color: #fff;
+}
+.select-plugin button {
+    height: 14px;
+    width: 19px;
+    background: url(../images/icon/arrow_down.png) no-repeat center;
+    background-size: contain;
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    margin-top: -7px;
+}
+.commit-search-prize-container {
+    height: 50px;
+    width: 100%;
+    margin-top: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+#commit-search-prize-button {
+    height: 50px;
+    width: 80px;
+    background: transparent;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #3d8ff4;
+    z-index: 22;
+    position: absolute;
+    transition: color .6s ease;
+    left: 50%;
+    margin-left: -40px;
+}
+.a-hover {
+    height: 50px;
+    width: 0;
+    position: absolute;
+    background-color: #3d8ff4;
+    transition: width .7s ease;
+    will-change: width;
+    transform-origin: left;
+    overflow: auto;
+    right: -60px;
+    top: -8px;
+    border-radius: 10px;
+}
+
+.commit-search-prize-container:hover .a-hover {
+    width: 250px;
+}
+.commit-search-prize-container:hover #commit-search-prize-button {
+    color: #fff;
+}
+
 #arrow {
     transition: transform .5s;
     will-change: transform;

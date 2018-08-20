@@ -68,14 +68,14 @@
                         </ul>
                     </div>
                     <!-- 成员信息容器 -->
-                    <div class="part">
+                    <div class="part menber-container">
                         <ul class="member-information-list-container">
                             <li userinfoId='123456' group='嵌入式' grade="2017" url="213213"><img src="../images/logo/studio_logo_information.png"><div><span>邓苏城</span><span>2017届嵌入式组</span></div></li>
                         </ul>
                         <div class="turn-page-button">点击此加载更多...</div>
                     </div>
                     <!-- 导出和导入容器 -->
-                    <div class="part">
+                    <div class="part file-container">
                         导出和导入容器
                     </div>
                     <!-- 奖项的操作页面 -->
@@ -90,70 +90,120 @@
                         <img src="../images/icon/arrow_left_blue.png" id="arrow">
                         <span>筛选条件</span>
                     </a>
-                    <!-- 右边面板的展示区域 -->
-                    <main>
-                        
-                    </main>
                 </div>
-                <!-- 右边的操作面板 -->
-                <!-- 奖项条件查询面板 -->
-                <div class="panel">
+                <!-- 右边面板的展示区域 -->
+                <div class="panel-container">
+                    <!-- 奖项条件查询面板 -->
+                    <div class="panel prize-select-panel">
+                        <div class="prize-select-container">
+                            <span>获奖年份</span>
+                            <div class="select-plugin" tabindex>
+                                <span class="option">所有</span>
+                                <button class="prize-select-button"></button>
+                                <div class="prize-option-container">
+                                    <ul id="date-options">
+                                        <li>所有</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prize-select-container">
+                            <span>获奖级别</span>
+                            <div class="select-plugin" tabindex>
+                                <span>所有</span>
+                                <button class="prize-select-button"></button>
+                            <div class="prize-option-container">
+                                    <ul>
+                                        <li>所有</li>
+                                        <li>省级</li>
+                                        <li>市级</li>
+                                        <li>校级</li>
+                                        <li>学院级</li>
+                                    </ul>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="prize-select-container">
+                            <span>获奖等级</span>
+                            <div class="select-plugin" tabindex>
+                                <span>所有</span>
+                                <button class="prize-select-button"></button>
+                                <div class="prize-option-container">
+                                    <ul>
+                                        <li>所有</li>
+                                        <li>一等奖</li>
+                                        <li>二等奖</li>
+                                        <li>三等奖</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-search-prize-container">
+                            <a href="javascript:" id="commit-search-prize-button">确认</a>
+                            <div class="a-hover">
 
-                </div>
-                <!-- 奖项操作面板 -->
-                <div class="panel">
-               
-                </div>
-                 <!-- 成员管理操作面板 -->
-                <div class="panel">
-                    <div class="info-list-panel">
-                        <div class="condition-container grade-condition-container">
-                            <span>所属年级</span>
-                            <div class="swtich-select-container">
-                                <span>
-                                    全部
-                                </span>
-                                <img src="../images/icon/arrow_down.png">
                             </div>
                         </div>
-                        <div class="condition-container major-condition-container">
-                            <span>所属组别</span>
-                            <div class="swtich-select-container">
-                                <span>
-                                    全部
-                                </span>
-                                <img src="../images/icon/arrow_down.png">
+                    </div>
+                    <!-- 成员管理操作面板 -->
+                    <div class="panel">
+                        <div class="info-list-panel">
+                            <div class="condition-container grade-condition-container">
+                                <span>所属年级</span>
+                                <div class="swtich-select-container">
+                                    <span>
+                                        全部
+                                    </span>
+                                    <img src="../images/icon/arrow_down.png">
+                                </div>
+                            </div>
+                            <div class="condition-container major-condition-container">
+                                <span>所属组别</span>
+                                <div class="swtich-select-container">
+                                    <span>
+                                        全部
+                                    </span>
+                                    <img src="../images/icon/arrow_down.png">
+                                </div>
+                            </div>
+                            <div class="info-button-container">
+                                <span>确认</span>
+                                <div class="info-button-layer"><span>确认</span></div>
+                            </div>
+                            <div class="info-select-list grade-select-list">
+                                <ul choice-text="全部">
+                                    <li>全部</li>
+                                    <li>2004</li>
+                                    <li>2005</li>
+                                    <li>2006</li>
+                                    <li>2007</li>
+                                    <li>2008</li>
+                                    <li>2009</li>
+                                    <li>2010</li>
+                                    <li>2011</li>
+                                </ul>
+                            </div>
+                            <div class="info-select-list group-select-list">
+                                <ul choice-text="全部">
+                                    <li>全部</li>
+                                    <li>嵌入式组</li>
+                                    <li>前端组</li>
+                                    <li>后台组</li>
+                                    <li>手游组</li>
+                                    <li>移动组</li>
+                                    <li>数据挖掘组</li>
+                                    <li>设计师组</li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="info-button-container">
-                            <span>确认</span>
-                            <div class="info-button-layer"><span>确认</span></div>
-                        </div>
-                        <div class="info-select-list grade-select-list">
-                            <ul choice-text="全部">
-                                <li>全部</li>
-                                <li>2004</li>
-                                <li>2005</li>
-                                <li>2006</li>
-                                <li>2007</li>
-                                <li>2008</li>
-                                <li>2009</li>
-                                <li>2010</li>
-                                <li>2011</li>
-                            </ul>
-                        </div>
-                        <div class="info-select-list group-select-list">
-                            <ul choice-text="全部">
-                                <li>全部</li>
-                                <li>嵌入式组</li>
-                                <li>前端组</li>
-                                <li>后台组</li>
-                                <li>手游组</li>
-                                <li>移动组</li>
-                                <li>数据挖掘组</li>
-                                <li>设计师组</li>
-                            </ul>
-                        </div>
+                    </div>
+                    <!-- 导出和导入操作面板 -->
+                    <div class="panel">
+                        导出和导入操作面板
+                    </div>
+                    <!-- 奖项操作面板 -->
+                    <div class="panel">
+                        奖项操作面板
                     </div>
                 </div>
             </section>
