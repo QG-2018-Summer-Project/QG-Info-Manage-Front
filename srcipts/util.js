@@ -1,4 +1,4 @@
-window.ip = '192.168.1.104';
+window.ip = '192.168.1.102';
 
 
 /**
@@ -125,8 +125,8 @@ var requestAnimation = function (fun, time) {
 };
 
 /**
- * 将图片预先缓存到网页中，需要的时候再将其读取。
- * @param {Array} imgArray 图片的数组
+ * 将图片预先缓存到网页中，需要的时候再将其读取，并且为一张一张加载
+ * @param {Array} imgArray 图片的url数组
  * @param {Function} callback 回调函数
  */
 function imgPreLoad(imgArray) {

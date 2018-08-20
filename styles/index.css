@@ -345,3 +345,130 @@ body {
     transition: transform .5s;
     will-change: transform;
 }
+
+/* 信息展示列表的右边条件分类框↓ */
+
+.info-list-panel {
+    position: relative;
+    width: 480px;
+    height: 400px;
+}
+.info-list-panel span {
+    display: block;
+    float: left;
+    font-size: 20px;
+    color: #3d90f5;
+}
+.condition-container {
+    width: 336px;
+    height: 56px;
+    margin: 40px auto;
+}
+.condition-container>span {
+    height: 56px;
+    width: 100px;
+    line-height: 56px;
+    text-align: center;
+}
+.swtich-select-container {
+    float: left;
+    cursor: pointer;
+    width: 192px;
+    height: 48px;
+    margin-left: 32px;
+    border: 4px solid #9EC7FA;
+    border-radius: 8px;
+}
+.swtich-select-container>span {
+    /* width: 100px; */
+    height: 48px;
+    margin-left: 36px;
+    line-height: 48px;
+}
+.swtich-select-container>img {
+    display: block;
+    float: right;
+    margin: 16px 16px;
+}
+.info-select-list {
+    position: absolute;
+    display: none;
+    width: 200px;
+    height: 192px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    background-color: #fff;
+    transition: transform .4s ease, opacity .4s ease;
+}
+.info-list-animate {
+    transform: translateY(20px);
+    opacity: 1;
+}
+.info-select-list ul {
+    width: 216px;
+    height: 192px;
+    overflow: auto;
+}
+.info-select-list ul li {
+    text-align: center;
+    cursor: pointer;
+    height: 48px;
+    line-height: 48px;
+    color: #424242;
+    font-size: 20px;
+}
+.info-select-list ul li:hover,.info-list-active {
+    color: #fff!important;
+    background-color: #3d90f5!important;
+}
+.grade-select-list {
+    top: 40px;
+    left: 203px;
+}
+.group-select-list {
+    top: 140px;
+    left: 203px;
+}
+.info-button-container {
+    position: relative;
+    float: right;
+    margin-top: 40px;
+    width: 320px;
+    height: 72px;
+}
+.info-button-container span {
+    cursor: pointer;
+    margin-left: 50px;
+    height: 72px;
+    line-height: 72px;
+    font-size: 24px;
+    color: #3d90f5;
+}
+.info-button-layer {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    width: 0px;
+    height: 72px;
+    background-color: #3d90f5;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+    transition: width .5s ease;
+    overflow: hidden;
+}
+.info-button-layer-animate {
+    width: 320px;
+}
+.info-button-layer>span {
+    position: absolute;
+    width: 48px;
+    height: 72px;
+    line-height: 72px;
+    right: 222px;
+    color: #fff;
+    font-size: 24px;
+}
+/* 信息展示列表的右边条件分类框↑ */
