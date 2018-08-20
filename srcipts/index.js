@@ -167,24 +167,24 @@
     /**
      * 初始化奖项容器
      */
-    function initprizeContainer() {
-        var prizeContainer = document.getElementsByClassName('prize-container')[0],
+    // function initprizeContainer() {
+    //     var prizeContainer = document.getElementsByClassName('prize-container')[0],
 
-        prizeModel = `<li>
-                        <a href="javascript:">
-                            <div class="prize-img-container">
-                                <img src="" class="prize-img">
-                            </div>
-                            <div class="prize-info-container">
-                                <h1 class="prize-name"></h1>
-                                <p class="prize-time-container"><span class="prize-time">2018-02-02</span></p>
-                                <p><span class="prize-people"></span></p>                                
-                            </div>
-                        </a>
-                    </li>`;
-        //请求后
+    //     prizeModel = `<li>
+    //                     <a href="javascript:">
+    //                         <div class="prize-img-container">
+    //                             <img src="" class="prize-img">
+    //                         </div>
+    //                         <div class="prize-info-container">
+    //                             <h1 class="prize-name"></h1>
+    //                             <p class="prize-time-container"><span class="prize-time">2018-02-02</span></p>
+    //                             <p><span class="prize-people"></span></p>                                
+    //                         </div>
+    //                     </a>
+    //                 </li>`;
+    //     //请求后
         
-    }
+    // }
     /**
      * 点击某一个选项时
      */
@@ -194,20 +194,29 @@
 })();
 
 /**
- * @version 1.0
- * @description 打开查看成员信息时候显示多个成员信息的列表的函数，这个函数暂未命名
+ * @version 1.1
+ * @description 打开查看成员信息时候显示多个成员信息的列表的函数.筛选功能填完整后，将这个筛选的结果放在整个区域类名为member-information-list-container的div中。
+ * 然后加载更多则会在这个类的group和grade属性进行获取。
  */
-(function(){
+function informationListContainer() {
     // 初始化页数
     var page;
 
     /**
-     * @description 对页面进行初始化并第一次发送请求
+     * @description 对页面进行初始化并第一次发送请求,测试用
      */
     (function() {
         page = 0;
         $('.member-information-list-container')[0].innerHTML = '';
-        informationListRequest('', '');
+        var grade = $('.member-information-list-container').attr('grade'),
+            group = $('.member-information-list-container').attr('group');
+        if (grade == '全部') {
+            grade = '';
+        }
+        if (group == '全部') {
+            group = '';
+        }
+        informationListRequest(group, grade);
     })();
 
     /**
@@ -218,10 +227,9 @@
         var container = $('.member-information-list-container')[0],
             i,
             userinfoArr = jsonObj.userInfoList;
-        console.log(userinfoArr.length)
         for (i = 0; i < userinfoArr.length; i++) {
-            container.innerHTML += '<li userinfoId=' + userinfoArr[i].userinfoId + '>'
-                                + '<img src="../images/logo/studio_logo_information.png" url='+ userinfoArr[i].url +'>'  
+            container.innerHTML += '<li userinfoid=' + userinfoArr[i].userinfoId + '>'
+                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'">'  
                                 + '<div>'
                                 + '<span>'+ userinfoArr[i].name +'</span>'
                                 + '<span>' + userinfoArr[i].grade + userinfoArr[i].group + '</span>'
@@ -229,6 +237,37 @@
                                 + '</li>'
         }
     }
+
+    /**
+     * @description 加载更多的函数
+     * @param {object} event 事件对象
+     */
+    function loadMoreListen(event) {
+        var grade = $('.member-information-list-container').attr('grade'),
+            group = $('.member-information-list-container').attr('group');
+        if (grade == '全部') {
+            grade = '';
+        }
+        if (group == '全部') {
+            group = '';
+        }
+        if (event.type == 'click') {
+            // 第一次进行加载更多的时候，对点击事件进行移除
+            EventUtil.removeHandler($('.menber-container .turn-page-button')[0], 'click', loadMoreListen);
+            $('.menber-container .turn-page-button')[0].innerText = '向下滚动加载更多...';
+            informationListRequest(group, grade);
+        } else {
+            if ($('.part-left').scrollTop() + $('.part-left')[0].clientHeight - 59 >= parseInt($('.member-information-list-container').css('height')) && 
+                ((event.wheelDelta && event.wheelDelta < 0) || (event.detail && event.detail < 0))) {
+                // 移除鼠标监听事件，避免同一时间多次请求
+                EventUtil.removeHandler($('.part-left')[0], 'mousewheel', loadMoreListen);
+                informationListRequest(group, grade);
+            }
+        }
+        
+    }
+    $('.menber-container .turn-page-button')[0].onclick = loadMoreListen;
+    // EventUtil.addHandler($('.menber-container .turn-page-button')[0], 'click', loadMoreListen);
 
 
     /**
@@ -257,6 +296,9 @@
                     case '1': {
                         // 请求完毕后统一加一页
                         informationListRenew(responseObj);
+                        if (page != 0) {
+                            EventUtil.addHandler($('.part-left')[0], 'mousewheel', loadMoreListen);  // 加载完毕后重新添加点击事件，防止一次请求多次，请求时候立刻移除鼠标事件。
+                        }
                         page++;
                         break;
                     }
@@ -266,17 +308,10 @@
                         break;
                     }
 
-                    case '7': {
-                       
-                        break;
-                    }
-
-                    case '9': {
-                        
-                        break;
-                    }
-
                     case '10': {
+                        $('.menber-container .turn-page-button')[0].innerText = '已经到底了...';
+                        $('.menber-container .turn-page-button').css('background-color', '#C1C1C1');
+                        $('.menber-container .turn-page-button').css('color', '#424242')
                         break;
                     }
                 }
@@ -288,7 +323,7 @@
             }
         });
     }
-})();
+}
 
 /**
  * @description 对成员列表添加事件监听，在页面渲染完毕后添加事件监听，一直到程序结束,这个区域的事件监听无论这个区域加载多少个子项，都能够进行，只需要调用一次。
@@ -298,15 +333,19 @@
     function filterClickListen(event) {
         switch(event.target) {
             case $('.info-button-container>span')[0]:
+            case $('.info-button-layer>span')[0]:
             case $('.info-button-container .info-button-layer')[0]: {
-                // 筛选后执行
+                // 筛选后按确定按钮的时候执行
+                $('.member-information-list-container').attr('grade', $('.grade-condition-container .swtich-select-container>span')[0].innerText);
+                $('.member-information-list-container').attr('group', $('.major-condition-container .swtich-select-container>span')[0].innerText);
+                $('.member-information-list-container')[0].innerHTML = '';
+                informationListContainer();
                 break;
             }
         }
-        inforListHidden();
     }
     // 筛选框的事件监听
-    EventUtil.addHandler(document, 'click', filterClickListen);
+    EventUtil.addHandler($('.info-list-panel')[0], 'click', filterClickListen);
 
     /**
      * @description 对下拉列表的展示
@@ -324,10 +363,14 @@
     // 展示下拉表的事件监听
     EventUtil.addHandler($('.grade-condition-container .swtich-select-container')[0], 'click', function() {
         var i = 0; 
+        // 对组别的下拉栏进行隐藏
+        inforListHidden($('.group-select-list'));
         // 对下拉列表已经选择的进行初始化
         for (i = 0; i < $('.grade-select-list ul li').length; i++) {
+            // 循环将之前具有这个类名去除掉
             ClassUtil.removeClass($('.grade-select-list ul li')[i], 'info-list-active');
             if ($('.grade-select-list ul li')[i].innerText == $('.grade-select-list ul').attr('choice-text')) {
+                // 循环到已经上次选择相同时候，进行添加类标注出来
                 ClassUtil.addClass($('.grade-select-list ul li')[i], 'info-list-active')
             }
         }
@@ -335,6 +378,8 @@
     });
     EventUtil.addHandler($('.major-condition-container .swtich-select-container')[0], 'click', function() {
         var i = 0; 
+        // 对年级的下拉栏进行隐藏
+        inforListHidden($('.grade-select-list'));
         // 对下拉列表已经选择的进行初始化
         for (i = 0; i < $('.group-select-list ul li').length; i++) {
             ClassUtil.removeClass($('.group-select-list ul li')[i], 'info-list-active')
@@ -348,13 +393,11 @@
     /**
      * @description 下拉列表的隐藏
      */
-    function inforListHidden() {
-        for (i = 0; i < 2; i++) {
-            ClassUtil.removeClass($('.info-select-list')[i], 'info-list-animate');
+    function inforListHidden($targetList) {
+            ClassUtil.removeClass($targetList[0], 'info-list-animate');
             setTimeout(function() {
-                $('.info-select-list').css('display', 'none');
+                $targetList.css('display', 'none');
             }, 300);
-        }
     }
 
     /**
@@ -368,12 +411,11 @@
         var text = event.target.innerText;
         if ($(event.target).parents('div:eq(0)').hasClass('grade-select-list') == true) {
             $('.grade-condition-container .swtich-select-container>span')[0].innerText = text;
-            inforListHidden();
-
+            inforListHidden($('.grade-select-list'));
         }
         if ($(event.target).parents('div:eq(0)').hasClass('group-select-list') == true) {
             $('.major-condition-container .swtich-select-container>span')[0].innerText = text;
-            inforListHidden();
+            inforListHidden($('.group-select-list'));
         }
         // 赋值这个属性，下次会显示上次已经选择的属性
         $(event.target).parents('ul:eq(0)').attr('choice-text', text)
@@ -406,7 +448,7 @@
     $('.info-button-container>span')[0].onmouseleave = filterButtonMousemoveListen;
 
     /**
-     * @description 显示或者隐藏组员的组别
+     * @description 鼠标移动事件进行显示或者隐藏组员的组别
      */
     function showInformationGroup(eventType) {
         // 当鼠标在这个列表的上方的时候，显示组别
@@ -457,14 +499,35 @@
         var containerTag = null;
         if (event.target.tagName == 'LI') {
             containerTag = event.target;
-        } else {
+            informationDetailRequest(containerTag.getAttribute('userinfoid'));
+        } else if ($(event.target).parents('li')[0]) {
             containerTag = $(event.target).parents('li')[0];
+            // if 
+            informationDetailRequest(containerTag.getAttribute('userinfoid'));
         }
-        informationDetailRequest(containerTag.getAttribute('userinfoId'));
+        
     }
     EventUtil.addHandler($('.member-information-list-container')[0], 'click', informationListClickListen);
     EventUtil.addHandler($('.member-information-list-container')[0], 'mouseover', infoListConMousemoveListen);
     EventUtil.addHandler($('.member-information-list-container')[0], 'mouseout', infoListConMousemoveListen);
+    // 隐藏下拉框
+    EventUtil.addHandler(document, 'click', function() {
+        var i;
+        for (i = 0; i < 2; i++) {
+            inforListHidden($('.info-select-list:eq('+ i +')'));
+        }
+    });
+    // 切换为查看成员粗略信息的时候的事件监听
+    EventUtil.addHandler($('.header-ul li')[1], 'click', function() {
+        // 先初始化筛选部分
+        $('.member-information-list-container').attr('group', '全部');
+        $('.member-information-list-container').attr('grade', '全部');
+        $('.grade-condition-container .swtich-select-container span')[0].innerText = '全部';
+        $('.major-condition-container .swtich-select-container span')[0].innerText = '全部';
+        $('.grade-select-list ul').attr('choice-text', '全部');
+        $('.group-select-list ul').attr('choice-text', '全部');
+        informationListContainer();
+    });
 })();
 
 /**
@@ -512,6 +575,8 @@ function informationDetailRequest(userinfoId) {
         }
     });
 }
+
+
 (function() {
     var selectPlugin = document.getElementsByClassName('select-plugin'),
         selectButton = document.getElementsByClassName('prize-select-button'),
@@ -572,3 +637,10 @@ function informationDetailRequest(userinfoId) {
     }
 })();
 
+
+
+(function() {
+    function loadOptionAnimate() {
+        
+    }
+})()

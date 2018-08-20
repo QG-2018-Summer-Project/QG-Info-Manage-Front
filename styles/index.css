@@ -316,15 +316,68 @@ body {
     cursor: pointer;
     width: 60%;
     height: 40px;
-    border-radius: 4px;
+    border-radius: 8px;
     margin: 10px auto;
     line-height: 40px;
     text-align: center;
+    font-size: 16px;
+    color: #fff;
     background-color: #3d90f5;
 }
 .turn-page-button:hover {
     /* background-color:  */
 }
+
+/* 文件上传下载块↓ */
+
+.upload-download-container {
+    display: block!important;
+    width: 100%;
+}
+.load-button-container {
+    position: absolute;
+    top: 300px;
+    left: 0;
+}
+.load-button-container li {
+    position: relative;
+    margin-top: 10px;
+    width: 200px;
+    height: 56px;
+    /* background-color: #3d90f5; */
+}
+.load-button-container span {
+    display: block;
+    height: 56px;
+    line-height: 56px;
+    font-size: 20px;
+}
+.load-button-container li>span {
+    cursor: pointer;
+    float: left;
+    margin-left: 32px;
+    color: #3d90f5;
+}
+.load-button-layer {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 56px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    background-color: #3d90f5;
+    overflow: hidden;
+}
+.load-button-layer>span {
+    width: 100px;
+    margin-left: 32px;
+    color: #fff;
+}
+/* 文件上传下载↑ */
+
+
 
 .show-part-right .panel {
     opacity: 1;
