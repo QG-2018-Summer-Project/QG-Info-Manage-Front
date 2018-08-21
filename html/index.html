@@ -60,7 +60,10 @@
                     </div>
                     <!-- 成员信息容器 -->
                     <div class="part menber-container" data-index="1">
-                        成员信息容器
+                        <ul class="member-information-list-container" group="全部" grade="全部" >
+                            <!-- <li userinfoId='123456' group='嵌入式' grade="2017" url="213213"><img src="../images/logo/studio_logo_information.png"><div><span>邓苏城</span><span>2017届嵌入式组</span></div></li> -->
+                        </ul>
+                        <div class="turn-page-button">点击此加载更多...</div>
                     </div>
                     <!-- 导出和导入容器 -->
                     <div class="part file-container" data-index="2">
@@ -68,7 +71,21 @@
                     </div>
                     
                     <!-- 奖项的操作页面 -->
-                   
+                    <div class="part prizeDetailContainer">
+                        奖项的操作页面
+                    </div>
+                    <!-- < 成员详细信息页面 > -->
+                    <!-- <div class="part upload-download-container">
+                        <ul class="load-button-container">
+                            <li><div class="load-button-layer"><span>导入奖项</span></div><span>导入奖项</span></li>
+                            <li><div class="load-button-layer"><span>导入成员</span></div><span>导入成员</span></li>
+                            <li><div class="load-button-layer"><span>导出奖项</span></div><span>导出奖项</span></li>
+                            <li><div class="load-button-layer"><span>导出成员</span></div><span>导出成员</span></li>
+                        </ul>
+                        <div class="file-preview-container">
+
+                        </div>
+                    </div> -->
                 </main>
             </section>
             <section class="part-right">
@@ -134,7 +151,55 @@
                     </div>
                     <!-- 成员管理操作面板 -->
                     <div class="panel">
-                        成员管理操作面板
+                        <div class="info-list-panel">
+                            <div class="condition-container grade-condition-container">
+                                <span>所属年级</span>
+                                <div class="swtich-select-container">
+                                    <span>
+                                        全部
+                                    </span>
+                                    <img src="../images/icon/arrow_down.png">
+                                </div>
+                            </div>
+                            <div class="condition-container major-condition-container">
+                                <span>所属组别</span>
+                                <div class="swtich-select-container">
+                                    <span>
+                                        全部
+                                    </span>
+                                    <img src="../images/icon/arrow_down.png">
+                                </div>
+                            </div>
+                            <div class="info-button-container">
+                                <span>确认</span>
+                                <div class="info-button-layer"><span>确认</span></div>
+                            </div>
+                            <div class="info-select-list grade-select-list">
+                                <ul choice-text="全部">
+                                    <li>全部</li>
+                                    <li>2004</li>
+                                    <li>2005</li>
+                                    <li>2006</li>
+                                    <li>2007</li>
+                                    <li>2008</li>
+                                    <li>2009</li>
+                                    <li>2010</li>
+                                    <li>2011</li>
+                                </ul>
+                            </div>
+                            <div class="info-select-list group-select-list">
+                                <ul choice-text="全部">
+                                    <li>全部</li>
+                                    <li>嵌入式组</li>
+                                    <li>前端组</li>
+                                    <li>后台组</li>
+                                    <li>手游组</li>
+                                    <li>移动组</li>
+                                    <li>数据挖掘组</li>
+                                    <li>设计师组</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -78,7 +78,7 @@ function registerModeInputListen(event) {
             event.target.value =  limitLength(event.target, 15);
             if (event.target.value.length < 2) {
                 // 进行提示
-                showTips($('.register-name-tip')[0], '名字过短');
+                showTips($('.register-name-tip')[0], '名字大于1位');
             } else {
                 // 消除提示
                 hiddenTips($('.register-name-tip')[0]);
@@ -91,7 +91,7 @@ function registerModeInputListen(event) {
             event.target.value =  limitLength(event.target, 13);
             if (event.target.value.length < 6) {
                 // 进行提示
-                showTips($('.register-password-tip')[0], '密码过短');
+                showTips($('.register-password-tip')[0], '密码为6-13位');
             } else {
                 // 消除提示
                 hiddenTips($('.register-password-tip')[0]);
@@ -107,6 +107,7 @@ EventUtil.addHandler($('.register-container')[0], 'input', registerModeInputList
  * @param {object} event 时间对象
  */
 function pageClickListen(event) {
+    var i;
     switch(event.target) {
         case $('.login-container button')[0]: {
             // 登陆按钮点击事件监听
@@ -130,6 +131,10 @@ function pageClickListen(event) {
 
         case $('#login-mode span')[0]:
         case $('#login-mode span')[1]: {
+            // 隐藏注册输入框的提示
+            for (i = 2; i < 5; i++) {
+                hiddenTips($('.tips')[i]);
+            }
             // 切换为登录模式
             if (ClassUtil.hasClass($('.login-input-container')[0], 'input-container-unrotated') == false) {
                 ClassUtil.removeClass($('.login-container')[0], 'mode-container-rotated');
@@ -153,6 +158,10 @@ function pageClickListen(event) {
 
         case $('#register-mode span')[0]:
         case $('#register-mode span')[1]: {
+            // 隐藏登录的提示
+            for (i = 0; i < 2; i++) {
+                hiddenTips($('.tips')[i]);
+            }
             // 切换为注册模式
             if (ClassUtil.hasClass($('.register-input-container')[0], 'input-container-unrotated') == false) {
                 ClassUtil.removeClass($('.register-container')[0], 'mode-container-rotated');
@@ -181,27 +190,38 @@ EventUtil.addHandler(document, 'click', pageClickListen);
  * @description 注册表单提交时候先进行检测是否符合
  */
 function registerSubmitCheck() {
-    switch(true) {
-        case ($('#register-userName')[0].value.length == 0): {
-            // 进行提示
-            showTips($('.register-userName-tip')[0], '请输入账号');
-            $('#register-userName')[0].focus();
-            return false;
-        }
+    // 对注册账号进行再次检验
+    if ($('#register-userName')[0].value.length == 0) {
+        showTips($('.register-userName-tip')[0], '请输入账号');
+        $('#register-userName')[0].focus();
+        return false;
+    } else if ($('#register-userName')[0].value.length < 6) {
+        showTips($('.register-userName-tip')[0], '账号不低于6位');
+        $('#register-userName')[0].focus();
+        return false;
+    } else if (checkAllUserName($('#register-userName')[0]) == false) {
+        showTips($('.register-userName-tip')[0], '请输入数字和英文字母');
+        $('#register-userName')[0].focus();
+        return false;
+    }
 
-        case ($('#register-name')[0].value.length == 0): {
-            // 进行提示
-            showTips($('.register-name-tip')[0], '请输入真实姓名');
-            $('#register-name')[0].focus();
-            return false;
-        }
+    // 对用户姓名进行检验
+    if ($('#register-name')[0].value.length == 0) {
+        // 进行提示
+        showTips($('.register-name-tip')[0], '请输入真实姓名');
+        $('#register-name')[0].focus();
+        return false;
+    }
 
-        case ($('#register-password')[0].value.length == 0): {
-            // 进行提示
-            showTips($('.register-password-tip')[0], '请输入密码');
-            $('#register-password')[0].focus();
-            return false;
-        }
+    // 对输入的密码进行检验
+    if ($('#register-password')[0].value.length == 0) {
+        showTips($('.register-password-tip')[0], '请输入密码');
+        $('#register-password')[0].focus();
+        return false;
+    } else if ($('#register-password')[0].value.length < 6) {
+        showTips($('.register-password-tip')[0], '密码为6-13位');
+        $('#register-password')[0].focus();
+        return false;
     }
     return true;
 }
