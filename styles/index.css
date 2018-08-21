@@ -325,23 +325,24 @@ body {
     transition: width .5s ease;
     will-change: width;
     background-color: #fff;
+    display: none;
 }
 
 /* 展示操作面板 */
 
-.show-part-right {
+.part-right-animation {
     width: 400px;
 }
-.show-part-right .show-panel-button-container {
+.part-right-animation .show-panel-button-container {
     height: 30px;
     width: auto;
     margin: 20px;
 }
-.show-part-right #arrow {
+.part-right-animation #arrow {
     transform: rotateZ(180deg);
     padding: 0 5px;
 }
-.show-part-right .panel {
+.part-right-animation .panel {
     opacity: 1;
 }
 
