@@ -318,8 +318,8 @@ var AjaxUtil = {
             dataType: dataType,
             processData: false,
             contentType: contentType,
-            success: successCallback(),
-            error: errorCallback()
+            success: successCallback,
+            error: errorCallback
         });
     },
 

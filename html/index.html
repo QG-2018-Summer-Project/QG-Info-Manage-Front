@@ -39,9 +39,9 @@
                 </a>
             </div>
             <ul class="header-ul">
-                <li><a href="javascript:">所获奖项</a><div class="li-hover"></div></li>
-                <li><a href="javascript:">成员信息</a><div class="li-hover"></div></li>
-                <li><a href="javascript:">导入导出</a><div class="li-hover"></div></li>
+                <li data-index="0"><a href="javascript:">所获奖项</a><div class="li-hover"></div></li>
+                <li data-index="1"><a href="javascript:">成员信息</a><div class="li-hover"></div></li>
+                <li data-index="2"><a href="javascript:">导入导出</a><div class="li-hover"></div></li>
             </ul>
             <a href="javascript:" id="user-name">用户名</a>
         </header>
@@ -52,34 +52,26 @@
             <section class="part-left">
                 <main class="part-left-main">
                     <!-- 所获奖项容器 -->
-                    <div class="part prize-container">
+                    <div class="part prize-container" data-index="0">
                         <ul>
-                            <li>
-                               <a href="javascript:">
-                                    <div class="prize-img-container">
-                                        <img src="" class="prize-img">
-                                    </div>
-                                    <div class="prize-info-container">
-                                        <h1 class="prize-name">第十一届挑战杯“智慧城市专项赛”金奖</h1>
-                                        <p class="prize-time-container">获奖时间：<span class="prize-time">2018-02-02</span></p>
-                                        <p>获奖成员：<span class="prize-people">陈子锋</span></p>                                
-                                    </div>
-                               </a>
-                            </li>
-                            
+                            asdas
                         </ul>
+                        <div>
+                        
+                        </div>
                     </div>
                     <!-- 成员信息容器 -->
-                    <div class="part menber-container">
+                    <div class="part menber-container" data-index="1">
                         <ul class="member-information-list-container" group="全部" grade="全部" >
                             <!-- <li userinfoId='123456' group='嵌入式' grade="2017" url="213213"><img src="../images/logo/studio_logo_information.png"><div><span>邓苏城</span><span>2017届嵌入式组</span></div></li> -->
                         </ul>
                         <div class="turn-page-button">点击此加载更多...</div>
                     </div>
                     <!-- 导出和导入容器 -->
-                    <div class="part file-container">
+                    <div class="part file-container" data-index="2">
                         导出和导入容器
                     </div>
+                    
                     <!-- 奖项的操作页面 -->
                     <div class="part prizeDetailContainer">
                         奖项的操作页面
@@ -94,7 +86,9 @@
                         </ul>
                         <div class="file-preview-container">
                             <ul class="file-preview-head">
-                                
+                                <li></li>
+                                <li></li>
+                                <li></li>
                             </ul>
                             <ul class="file-preview-value">
                                 <li><ul>
@@ -164,7 +158,7 @@
                         <div class="prize-select-container">
                             <span>获奖级别</span>
                             <div class="select-plugin" tabindex>
-                                <span>所有</span>
+                                <span class="option">所有</span>
                                 <button class="prize-select-button"></button>
                             <div class="prize-option-container">
                                     <ul>
@@ -180,7 +174,7 @@
                         <div class="prize-select-container">
                             <span>获奖等级</span>
                             <div class="select-plugin" tabindex>
-                                <span>所有</span>
+                                <span class="option">所有</span>
                                 <button class="prize-select-button"></button>
                                 <div class="prize-option-container">
                                     <ul>
@@ -250,14 +244,6 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <!-- 导出和导入操作面板 -->
-                    <div class="panel">
-                        导出和导入操作面板
-                    </div>
-                    <!-- 奖项操作面板 -->
-                    <div class="panel">
-                        奖项操作面板
                     </div>
                 </div>
             </section>
