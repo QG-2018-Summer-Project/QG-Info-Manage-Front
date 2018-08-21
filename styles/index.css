@@ -368,12 +368,60 @@ body {
     border-top-right-radius: 24px;
     border-bottom-right-radius: 24px;
     background-color: #3d90f5;
+    transition: width .5s ease;
     overflow: hidden;
+}
+.load-button-active {
+    width: 200px;
 }
 .load-button-layer>span {
     width: 100px;
     margin-left: 32px;
     color: #fff;
+}
+.file-preview-container {
+    position: relative;
+    width: 700px;
+    height: 520px;
+    border: 4px solid #E0E0E0;
+    margin: 0 auto;
+    overflow-x: auto;
+    background-color: #fff;
+}
+.file-preview-head,.file-preview-value li ul {
+    white-space: nowrap;
+    height: 48px;
+    font-size: 0;
+    letter-spacing: -3px;
+}
+.file-preview-head li {
+    display: inline-block;
+    font-size: 18px;
+    vertical-align: top;
+    text-align: center;
+    line-height: 48px;
+    letter-spacing: 0px;
+    width: 100px;
+    height: 48px;
+    border-bottom: 2px solid #E0E0E0;
+    border-right: 2px solid #E0E0E0;
+    background-color: #f5f5f5;
+}
+.file-preview-head li:last-child {
+    border-right: none;
+}
+.file-preview-value {
+    background-color: #fff;
+}
+.file-preview-value li ul li {
+    display: inline-block;
+    vertical-align: top;
+    letter-spacing: 0px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 48px;
+    width: 100px;
+    height: 48px;
 }
 /* 文件上传下载↑ */
 

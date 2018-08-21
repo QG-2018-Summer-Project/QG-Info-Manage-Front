@@ -640,7 +640,95 @@ function informationDetailRequest(userinfoId) {
 
 
 (function() {
-    function loadOptionAnimate() {
-        
+    /**
+     * @description 按钮的遮罩层动画
+     * @param {DOM Object} target 目标节点标签对象
+     */
+    function loadOptionAnimate(target, event) {
+        // 添加遮罩层动画
+        if (ClassUtil.hasClass(target, 'load-button-active') == false && event.type == 'mouseover') {
+            ClassUtil.addClass(target, 'load-button-active');
+        }
+        // 移除遮罩层动画
+        if (ClassUtil.hasClass(target, 'load-button-active') == true && event.type == 'mouseout') {
+            ClassUtil.removeClass(target, 'load-button-active');
+        }
+    }
+    EventUtil.addHandler($('.load-button-container')[0], 'mouseover', function(event) {
+        // 兼容性
+        var event = event || window.event;
+
+        if ($(event.target).parents('li')[0]) {
+            // 当目标对象并不是父亲节点时候
+            loadOptionAnimate($(event.target).parents('li')[0].getElementsByClassName('load-button-layer')[0], event);
+        }
+        if (event.target.tagName == 'LI'){
+            // 当目标对象是父亲容器的时候
+            loadOptionAnimate(event.target.getElementsByClassName('load-button-layer')[0], event);
+        }
+    });
+    EventUtil.addHandler($('.load-button-container')[0], 'mouseout', function(event) {
+        // 兼容性
+        var event = event || window.event;
+
+        if ($(event.target).parents('li')[0]) {
+            // 当目标对象并不是父亲节点时候
+            loadOptionAnimate($(event.target).parents('li')[0].getElementsByClassName('load-button-layer')[0], event);
+        }
+        if (event.target.tagName == 'LI'){
+            // 当目标对象是父亲容器的时候
+            loadOptionAnimate(event.target.getElementsByClassName('load-button-layer')[0], event);
+        }
+    });
+
+    function excelReader(chartType) {
+        var files = null;
+        $('.upload')[0].onchange = function() {
+            var fileReader = new FileReader();
+            files = this.files;
+            fileReader.onload = function (e) {
+                var data = e.target.result,
+                    workbook = XLSX.read(data, {type: 'binary'}),
+                    // 仅仅读取这个文件的第一张sheet表
+                    readArr = XLSX.utils.sheet_to_formulae(workbook.Sheets[workbook.SheetNames[0]]);
+                    preViewFiles(chartType, readArr)
+            }
+        }
+
+        /**
+         * @description 对上传的文件进行
+         * @param {String} chartType excel表的类型，info或者prize
+         * @param {Array} readArr 读取内容的数组
+         */
+        function preViewFiles(chartType, readArr) {
+            var i,
+                headArr = null;
+            // 检测表头，需要全部正确
+            if (chartType == 'info') {
+                headArr = ['成员名字', '成员组别', '所属学院', '年级', '联系电话', '籍贯', 'QQ账号', '常用邮箱', '简介'];
+                for (i = 0; i < headArr.length; i++) {
+                    if (readArr[i] != headArr[i]) {
+                        alert('请输入正确的表头')
+                        files = null;
+                        return;
+                    }
+                }
+            } else {
+                headArr = ['奖项名称', '获奖时间', '奖项级别', '奖项等级', '授奖部门', '指导老师', '参赛学生', '奖项简介'];
+                for (i = 0; i < headArr.length; i++) {
+                    if (readArr[i] != headArr[i]) {
+                        alert('请输入正确的表头')
+                        files = null;
+                        return;
+                    }
+                }
+            }
+            // 进行预览的填充
+            for (i = 0; i < headArr.length; i++) {
+                if (readArr[i].slice(1,2) == '1') {
+                    $('.file-preview-head')[0].innerHTML += '<li>'+ readArr[i] +'</li>'
+                }
+            }
+        }
     }
 })()
