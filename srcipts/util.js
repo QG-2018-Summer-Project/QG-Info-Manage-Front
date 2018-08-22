@@ -1,5 +1,5 @@
-window.ip = '192.168.1.104';
-
+window.ip = '192.168.1.108';
+window.baseUrl = '';
 
 /**
  * 这是一个兼容性的监听事件。只需要直接用这个对象的方法就行。惰性加载函数，所以控制台输出只能是当前浏览器支持的监听事件
@@ -123,46 +123,6 @@ var requestAnimation = function (fun, time) {
         return setTimeout(fun, time);
     }
 };
-
-/**
- * 将图片预先缓存到网页中，需要的时候再将其读取，并且为一张一张加载
- * @param {Array} imgArray 图片的url数组
- * @param {Function} callback 回调函数
- */
-function imgPreLoad(imgArray) {
-    var i = 0,
-        img = new Image();
-
-        function load() {
-            img.src = 'http://'+ window.ip +':8080/qgmovie/img/' + imgArray[i];
-            i++;
-            img.onload = function() {
-                if (i < imgArray.length) {
-                    load();
-                }
-            };
-        }
-        load();
-}
- 
-/**
- * 对图片进行预加载
- * @param {Object} $targetArray 图片加载对象jq数组
- */
-function lazyLoad($targetArray) {
-    var i;
-    for (i = 0; i < $targetArray.length; i++) {
-        if ($(document).scrollTop() >= $targetArray[i].scrollTop) {
-            if ($targetArray[i].tagName == 'IMG') {  // 搜索页面的懒加载
-                $targetArray[i].setAttribute('src', 'http://'+ window.ip +':8080/qgmovie/img/' + $targetArray[i].getAttribute('data-src'));
-            } else {  // 首页面的懒加载
-                $targetArray[i].style.backgroundImage = $targetArray[i].getAttribute('movie-picture');
-            }
-        }
-    }
-}
-
-
 
 
 /**
@@ -343,4 +303,64 @@ var AjaxUtil = {
  */
 function print(obj) {
     console.log(obj);
+}
+
+/**
+ * @description 浮出层提示，仅仅只有提示，并不是确定框
+ * @param {String} text 提示内容
+ */
+function showMessage(text) {
+    $('.float-tips-layer span')[0].innerText = text;
+    $('.float-tips-layer').css('display', 'block');
+    setTimeout(function() {
+        if (ClassUtil.hasClass($('.float-tips-layer>div')[0], 'fadeIn') == false) {
+            ClassUtil.addClass($('.float-tips-layer>div')[0], 'fadeIn');
+        }
+    }, 10);
+    /**
+     * @description 关闭浮出层
+     */
+    function closeLayer() {
+        EventUtil.removeHandler($('.float-tips-layer button')[0], 'click', closeLayer);
+        if (ClassUtil.hasClass($('.float-tips-layer>div')[0], 'fadeIn') == true) {
+            ClassUtil.removeClass($('.float-tips-layer>div')[0], 'fadeIn');
+        }
+        setTimeout(function() {
+            $('.float-tips-layer').css('display', 'none');
+        }, 200);
+    }
+    EventUtil.addHandler($('.float-tips-layer button')[0], 'click', closeLayer);
+}
+
+/**
+ * @description 确定点击函数
+ * @param {string} text 提示内容
+ * @param {Function} callback 回调函数
+ */
+function showConfirm(text, callback){
+    $('.float-confirm-layer span')[0].innerText = text;
+    $('.float-confirm-layer').css('display', 'block');
+    setTimeout(function() {
+        if (ClassUtil.hasClass($('.float-confirm-layer>div')[0], 'fadeIn') == false) {
+            ClassUtil.addClass($('.float-confirm-layer>div')[0], 'fadeIn');
+        }
+    }, 10);
+    /**
+     * @description 关闭浮出层
+     */
+    function closeLayer(event) {
+        EventUtil.removeHandler($('.float-confirm-layer button')[0], 'click', closeLayer);
+        EventUtil.removeHandler($('.float-confirm-layer button')[1], 'click', closeLayer);
+        if (ClassUtil.hasClass($('.float-confirm-layer>div')[0], 'fadeIn') == true) {
+            ClassUtil.removeClass($('.float-confirm-layer>div')[0], 'fadeIn');
+        }
+        setTimeout(function() {
+            $('.float-confirm-layer').css('display', 'none');
+        }, 200);
+        if ($(event.target).attr('choice') == 'confirm') {
+            callback();
+        }
+    }
+    EventUtil.addHandler($('.float-confirm-layer button')[0], 'click', closeLayer);
+    EventUtil.addHandler($('.float-confirm-layer button')[1], 'click', closeLayer);
 }
