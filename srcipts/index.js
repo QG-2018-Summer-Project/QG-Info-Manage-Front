@@ -7,7 +7,8 @@ function showPartRight() {
         text = showPanelButton.getElementsByTagName('span')[0],
         partRight = document.getElementsByClassName('part-right')[0],
         panel = document.getElementsByClassName('panel');
-
+    
+    // 为按钮绑定一次事件就够了
     if (flag === true) {
         EventUtil.addHandler(showPanelButton, 'click', fn);
         flag = null;
@@ -23,25 +24,33 @@ function showPartRight() {
         }
     }
 
-
     var partLeft = document.getElementsByClassName('part-left-main')[0],
         thisPart =  partLeft.getElementsByClassName('show')[0],
-        index = thisPart.getAttribute('data-index');
-
+        index;
+        
     if (typeof(thisPart) === 'undefined') {
         // 展示初始化的页面
         
     } else {
+        index = thisPart.getAttribute('data-index');
         // 只有两种页面需要展示右边栏
         if ( index == 1 || index == 0 ) {
-            
             ClassUtil.addClass(partRight, 'show');
-
             ClassUtil.removeClass(panel[0], 'show');
             ClassUtil.removeClass(panel[1], 'show');
             ClassUtil.addClass(panel[index], 'show');    
         } 
     }
+}
+// 关闭右边面板
+function closePartRight() {
+    var showPanelButton = document.getElementById('show-panel-button'),
+        text = showPanelButton.getElementsByTagName('span')[0],
+        partRight = document.getElementsByClassName('part-right')[0];
+
+    ClassUtil.removeClass(partRight, 'part-right-animation');
+    ClassUtil.removeClass(partRight, 'show');
+    text.innerHTML = '筛选条件';
 }
 
 var PartIndex = {
@@ -54,197 +63,184 @@ var PartIndex = {
 /**
  * 点击顶部导航栏
  */
+firstMenu = document.getElementsByClassName('first-menu')[0];
 (function() {
     var headerLi = document.getElementsByClassName('header-ul')[0].getElementsByTagName('li');
-        firstMenu = document.getElementsByClassName('first-menu')[0];
 
-    for (let i = 0; i < headerLi.length; i++) {
-        EventUtil.addHandler(headerLi[i], 'click', headerLicallback);
-    }
-
-    function headerLicallback(e) {
-        var content = e.target.innerHTML,
-            thisIndex = e.currentTarget.getAttribute('data-index');
-            list = firstMenu.getElementsByTagName('li');
-
-        // 判断已经是否存在这个list项
-    
-        for(let i = 0, index; i < list.length; i++) {
-            index = list[i].getAttribute('data-index');
-            if (index === thisIndex) {
-                switchPartContainer(thisIndex);
-                return;
-            }
-        } 
-
-        // 创建一个菜单栏
-        createLi(content);
-
-        // 切换不同的面板
-        switchPartContainer(thisIndex);
-    }
-    /**
-     * 创建一个列表顶
-     * @param {string} content 
-     */
-    window.MenuIndex = 3;
-    function createLi(content) {
-
-        var docFragment = document.createDocumentFragment(),
-            li = document.createElement('li'),
-            a = document.createElement('a'),
-            button = document.createElement('button'),
-            text = document.createTextNode(content);
-
-        a.setAttribute('href', 'javascript:');
-        button.setAttribute('class', 'close-button');
-        a.appendChild(text);
-        li.appendChild(a);
-        li.appendChild(button);
-        // li.setAttribute('data-index', MenuIndex++);
-
-        switch (content) {
-            case '所获奖项': {
-                li.setAttribute('data-index', 0);
-                break;
-            } case '成员信息': {
-                li.setAttribute('data-index', 1);
-                break;
-            } case '导入导出': {
-                li.setAttribute('data-index', 2);
-                break;
-            } default: {
-                li.setAttribute('data-index', MenuIndex++);
-            }
+        for (let i = 0; i < headerLi.length; i++) {
+            EventUtil.addHandler(headerLi[i], 'click', headerLicallback);
         }
 
-        docFragment.appendChild(li);
-        firstMenu.appendChild(docFragment);
-        EventUtil.addHandler(button, 'click', closePartCallback);
-        EventUtil.addHandler(li, 'click',Licallback);
-    } 
-    /**
-     * 点击某个li的时的callback函数
-     * @param {Event} e 
-     */
-    function Licallback(e) {
-        e.stopPropagation();
-        
-        var index = e.currentTarget.getAttribute('data-index');
+        function headerLicallback(e) {
+            var content = e.target.innerHTML,
+                thisIndex = e.currentTarget.getAttribute('data-index');
+                list = firstMenu.getElementsByTagName('li');
 
-        switchPartContainer(index);
-    }
-    /**
-     * 关闭某个菜单
-     * @param {Event} e 
-     */
-    function closePartCallback(e) {
-        // 阻止冒泡
-        e.stopPropagation();
+            // 判断已经是否存在这个list项
+            for(let i = 0, index; i < list.length; i++) {
+                index = list[i].getAttribute('data-index');
+                if (index === thisIndex) {
+                    switchPartContainer(thisIndex);
+                    return;
+                }
+            } 
 
-        var thisLi = e.target.parentNode,
-            lastLi = thisLi.previousSibling,
-            nextLi = thisLi.nextSibling,
-            thisPart = document.getElementsByClassName('show')[0],
-            thisIndex = thisLi.getAttribute('data-index'),
-            partLeft = document.getElementsByClassName('part-left-main')[0];
-            // debugger
-
-        // 关闭当前的part
-
-        ClassUtil.removeClass(thisPart, 'show');
-
-        // 判断前面是否还有菜单
-        if (lastLi != null) {
-            lastIndex = lastLi.getAttribute('data-index');
-            switchPartContainer(lastIndex);
-        }
-
-        // 判断后面是否还是有菜单
-        if (nextLi != null) {
-            nextIndex = nextLi.getAttribute('data-index');
-            switchPartContainer(nextIndex);
-        }
-
-        // 如果是详细容器，那么关闭的时候要把它移除
-        if (thisIndex >= 3) {
-            
-            partLeft.removeChild(thisPart);
-        }
-
-        // 解除事件绑定
-        EventUtil.removeHandler(e.target, 'click', closePartCallback);
-
-        EventUtil.removeHandler(thisLi, 'click', Licallback);
-        // 删除这个list
-        firstMenu.removeChild(e.target.parentNode);
-        MenuIndex--;
-    }
-    /**
-     * 切换所有的面板函数
-     * 通过添加或者删除一个类show来实现
-     * @param {int} index 
-     * 0 代表 奖项
-     * 1 代表 成员信息
-     * 2 代表 导入导出功能
-     * >3 代表详细的奖项操作页面或成员操作页面
-     */
-    function switchPartContainer(index) { 
-        
-
-        var everyPart = document.getElementsByClassName('part'),
-            li = firstMenu.getElementsByTagName('li'),
-            thisIndex,
-            partRight = document.getElementsByClassName('part-right')[0];
-            
-        for (let i = 0; i < everyPart.length; i++) {
-            ClassUtil.removeClass(everyPart[i], 'show');
-            thisIndex = everyPart[i].getAttribute('data-index');
-            if (thisIndex === index) {
-                // 切换到这个容器
-                ClassUtil.addClass(everyPart[i], 'show');
-            }
-        }
-
-             
-        // 初始化容器
-        switch(index) {
-            case 0: {
+            // 创建一个菜单栏
+            createLi(content);
+            // 初始化请求放在这儿
+            if (thisIndex == 0) {
                 initprizeContainer();
-                break;
-            } case 1: {
-                // 初始化成员容器
-                break;
-            } case 2: {
-                //初始化导入导出容器
-
             }
+            // 切换不同的面板
+            switchPartContainer(thisIndex);
         }
-
-        for (let i = 0; i < li.length; i++) {
-
-            thisIndex = li[i].getAttribute('data-index');
-
-            ClassUtil.removeClass(li[i], 'first-menu-li-acitve');
-
-            if (thisIndex === index) {
-                ClassUtil.addClass(li[i], 'first-menu-li-acitve');
-            }
-        }
-        //关闭操作面板
-        ClassUtil.removeClass(partRight, 'part-right-animation');
-        ClassUtil.removeClass(partRight, 'show');
-
-        showPartRight();
-    }
-   
 })();
+
+
+/**
+ * 根据内容创建一个列表顶
+ * @param {string} content 标题栏的内容
+ */
+function createLi(content) {
+
+    var docFragment = document.createDocumentFragment(),
+        li = document.createElement('li'),
+        a = document.createElement('a'),
+        button = document.createElement('button'),
+        text = document.createTextNode(content);
+
+    a.setAttribute('href', 'javascript:');
+    button.setAttribute('class', 'close-button');
+    a.appendChild(text);
+    li.appendChild(a);
+    li.appendChild(button);
+    // li.setAttribute('data-index', detailIndex++);
+
+    switch (content) {
+        case '所获奖项': {
+            li.setAttribute('data-index', 0);
+            break;
+        } case '成员信息': {
+            li.setAttribute('data-index', 1);
+            break;
+        } case '导入导出': {
+            li.setAttribute('data-index', 2);
+            break;
+        } default: {
+            li.setAttribute('data-index', detailIndex);
+        }
+    }
+
+    docFragment.appendChild(li);
+    firstMenu.appendChild(docFragment);
+    EventUtil.addHandler(button, 'click', closePartCallback);
+    EventUtil.addHandler(li, 'click',Licallback);
+} 
+
+/**
+ * 点击某个li的时的callback函数
+ * @param {Event} e 
+ */
+function Licallback(e) {
+    e.stopPropagation();
+    
+    var index = e.currentTarget.getAttribute('data-index');
+
+    switchPartContainer(index);
+}
+
+/**
+ * 关闭某个菜单
+ * @param {Event} e 
+ */
+function closePartCallback(e) {
+    // 阻止冒泡
+    e.stopPropagation();
+
+    var thisLi = e.target.parentNode,
+        lastLi = thisLi.previousSibling,
+        nextLi = thisLi.nextSibling,
+        thisPart = document.getElementsByClassName('show')[0],
+        thisIndex = thisLi.getAttribute('data-index'),
+        partLeft = document.getElementsByClassName('part-left-main')[0];
+        // 
+
+    // 关闭当前的part
+
+    ClassUtil.removeClass(thisPart, 'show');
+
+    // 判断前面是否还有菜单
+    if (lastLi != null) {
+        lastIndex = lastLi.getAttribute('data-index');
+        switchPartContainer(lastIndex);
+    }
+
+    // 判断后面是否还是有菜单
+    if (nextLi != null) {
+        nextIndex = nextLi.getAttribute('data-index');
+        switchPartContainer(nextIndex);
+    }
+
+    // 如果是详细类的容器，那么关闭的时候要把它移除
+    if (thisIndex >= 3) {
+        partLeft.removeChild(thisPart);
+    }
+
+    // 解除事件绑定
+    EventUtil.removeHandler(e.target, 'click', closePartCallback);
+
+    EventUtil.removeHandler(thisLi, 'click', Licallback);
+    // 删除这个list
+    firstMenu.removeChild(e.target.parentNode);
+    detailIndex--;
+}
+/**
+ * 切换所有的面板函数
+ * 通过添加或者删除一个类show来实现
+ * @param {int} index 
+ * 0 代表 奖项
+ * 1 代表 成员信息
+ * 2 代表 导入导出功能
+ * >3 代表详细的奖项操作页面或成员操作页面
+ */
+function switchPartContainer(index) { 
+    var everyPart = document.getElementsByClassName('part'),
+        li = firstMenu.getElementsByTagName('li'),
+        thisIndex;
+        
+    for (let i = 0; i < everyPart.length; i++) {
+        ClassUtil.removeClass(everyPart[i], 'show');
+        thisIndex = everyPart[i].getAttribute('data-index');
+        if (thisIndex == index) {
+            // 切换到这个容器
+            ClassUtil.addClass(everyPart[i], 'show');
+        }
+    }
+    
+    for (let i = 0; i < li.length; i++) {
+
+        thisIndex = li[i].getAttribute('data-index');
+
+        ClassUtil.removeClass(li[i], 'first-menu-li-acitve');
+
+        if (thisIndex == index) {
+            ClassUtil.addClass(li[i], 'first-menu-li-acitve');
+        }
+    }
+    //关闭上次打开的操作面板
+    closePartRight();
+
+    //打开新的操作面板
+    showPartRight();
+}
+   
+// 用于记录每一条奖项的索引
+// 如果是多次调用初始化，会将其重置为0
+var prizeIndex = 0;
 
 /**
  * 初始化奖项容器
  */
-window.prizeIndex = 0;
-
 function initprizeContainer() {
     var prizeUl = document.getElementsByClassName('prize-container')[0].getElementsByTagName('ul')[0];
         data = {
@@ -253,9 +249,9 @@ function initprizeContainer() {
             awardLevel: "",
             rank: ""
         };
-    
-    window.prizeURL = 'http://' + ip +':8080/qginfosystem/awardinfo/queryawardinfo';
-    
+
+    //请求粗略信息URL
+    window.prizeURL = 'http://' + ip + ':8080/qginfosystem/awardinfo/queryawardinfo';
     
     AjaxUtil.post(prizeURL, data, 'json', 'application/json', successCallback, errorCallback);
         
@@ -265,12 +261,22 @@ function initprizeContainer() {
             var num = r.awardInfoList.length;
             // 清空ul
             prizeUl.innerHTML = '';
+
+            // 每次初始化都要置为0
+            prizeIndex = 0;
+
+            //根据返回的数量创建奖项列表
             createPrize(num, r.awardInfoList);
 
             // 监听每一个奖项
             li = prizeUl.getElementsByTagName('li');
-            $('li').on('click', function(e) {
-                var ID = e.target.getAttribute('data-id');
+
+            $(li).on('click', function(e) {
+                e.stopPropagation();
+                var ID = e.currentTarget.getAttribute('data-id'),
+                    li = firstMenu.getElementsByTagName('li');
+
+                // 创建一个详细操作页面
                 viewPrizeDetail(ID);
             });
         }
@@ -280,6 +286,7 @@ function initprizeContainer() {
     }
 }
 
+// 用于记录请求数据
 var queryPrizeData = {
     page: 0,
     awardTime:"",
@@ -287,27 +294,57 @@ var queryPrizeData = {
     rank:""
 };
 
+// 查询状态常量
+var queryflag;
 /**
  * 根据条件翻页请求
  */
 function queryMorePrize() {
     AjaxUtil.post(prizeURL, queryPrizeData, 'json', 'application/json', successCallback, errorCallback);
-        
+      
     function successCallback(r) {
         if (r.status === '1') {
             console.log(r);
             var num = r.awardInfoList.length;
             createPrize(num, r.awardInfoList);
             queryPrizeData.page++;
+            queryflag = true;
         } else if (r.status === '10') {
-            console.log('没有结果');
-
+            queryflag = false;
         }
     }
     function errorCallback() {
         alert("网络状态似乎不太好");
     }
+    
 }
+
+/**
+ * 懒加载奖项翻页
+ */
+(function() {
+    var morePrizeButtonContainer = document.getElementsByClassName('more-prize-button-container')[0],
+        morePrizeButton = document.getElementById('more-prize-button'),
+        text = morePrizeButtonContainer.getElementsByTagName('span')[0];
+
+    EventUtil.addHandler(morePrizeButton, 'click', function() {
+        
+        text.innerHTML = '加载中...';
+        ClassUtil.addClass(morePrizeButton, 'hide');
+       
+        // 请求更多数据
+        queryMorePrize();
+    
+        setTimeout(()=>{
+            if (queryflag === false) {
+                text.innerHTML = '没有更多结果了';
+            } else if (queryflag === true) {
+                text.innerHTML = '';
+                ClassUtil.removeClass(morePrizeButton, 'hide');
+            }
+        }, 1000);
+    });
+})();
 
 /**
  * 根据数量创建奖项模板
@@ -328,16 +365,17 @@ function createPrize(num, data) {
                             </div>
                         </a>
                     `,
-    docFragment = document.createDocumentFragment();
+        docFragment = document.createDocumentFragment();
+    
     for (let i = 0; i < num; i++) {
-
         newNode = document.createElement('li');
         newNode.innerHTML = prizeModel;
-
         docFragment.appendChild(newNode);
     } 
+
     prizeUl.appendChild(docFragment);
 
+    // 填充奖项的信息
     (function addPrize(data) {
         var prizeLi = prizeUl.getElementsByTagName('li'),
             prizeImg = prizeUl.getElementsByClassName('prize-img'),
@@ -353,19 +391,21 @@ function createPrize(num, data) {
             prizeName[i].innerHTML = data[j].awardName;
             prizeTime[i].innerHTML = data[j].awardTime;
             prizePeople[i].innerHTML = data[j].joinStudent;
-
         }
-
     })(data);
+
+    // 记录上一次请求创建的奖项数量的位置
     prizeIndex += num;
 }
+
 /**
  * 奖项的详细页面
  */
-window.detailIndex = 4;
+
+window.detailIndex = 3;
 function viewPrizeDetail(ID) {
-    var prizeDetailContainer = document.getElementsByClassName('prizeDetailContainer');
-    var model = ` 
+    var partLeft = document.getElementsByClassName('part-left-main')[0],
+        model = ` 
                  <div class="prizeDetailContainer-left">
                 <div class="prize-detail-img-container">
                     <img src="" id="prize-detail-img">
@@ -379,41 +419,41 @@ function viewPrizeDetail(ID) {
                     <li>
                         <label for="">奖项名称</label>
                         <div class="prize-input-container">
-                            <input type="text">
+                            <input type="text" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
                         <label for="">奖项编号</label>
                         <div class="prize-input-container">
-                            <input type="text">
+                            <input type="text" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
                         <label for="">获奖时间</label>
                         <div class="prize-input-container">
-                            <input type="text">
+                            <input type="text" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
                         <label for="">获奖项目</label>
                         <div class="prize-input-container">
-                            <input type="text">
+                            <input type="text" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
                         <label for="">获奖部门</label>
                         <div class="prize-input-container">
-                            <input type="text">
+                            <input type="text" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
                         <label for="">获奖级别</label>
                         <div class="prize-input-container" style="margin-right: 10px;">
-                            <input type="text" style="width: 213px;">
+                            <input type="text" style="width: 213px;" class="prize-detail-input">
                         </div>
                         <label for="">获奖等级</label>
                         <div class="prize-input-container" >
-                            <input type="text" style="width: 213px;">
+                            <input type="text" style="width: 213px;" class="prize-detail-input">
                         </div>
                     </li>
                     <li>
@@ -435,19 +475,38 @@ function viewPrizeDetail(ID) {
                 </div>
             </div>
         `;
-    var newDiv = document.createElement('div');
-
+    var newDiv = document.createElement('div'),
+        prizeInfoURL = 'http://' + ip + ':8080/qginfosystem/awardinfo/getawardinfo';
+    
     newDiv.setAttribute('class', 'part prizeDetailContainer');
-    newDiv.setAttribute('data-index', detailIndex++);
+    newDiv.setAttribute('data-index', detailIndex);
+    newDiv.innerHTML = model;
+    partLeft.appendChild(newDiv);
 
-    newDiv.appendChild(model);
-
-
-    AjaxUtil.post(prizeURL, {awardId: ID}, 'json', 'application/json', successCallback, errorCallback);
-
-    function successCallback() {
+    AjaxUtil.post(prizeInfoURL, {awardId: ID}, 'json', 'application/json', successCallback, errorCallback);
+    
+    function successCallback(r) {
         if (r.status === '1') {
-            createLi(r.awardName);
+            var prizeDetailImg = document.getElementById('prize-detail-img'),
+                introduction = document.getElementById('introduction'),
+                prizeDetail = document.getElementsByClassName('prize-detail-input');
+
+            //填充信息
+            prizeDetailImg.setAttribute('src', r.awardInfo.url);
+            introduction.innerHTML = r.awardInfo.awardDescription;
+            prizeDetail[0].value = r.awardInfo.awardName;
+            prizeDetail[1].value = r.awardInfo.awardId;
+            prizeDetail[2].value = r.awardInfo.awardTime;
+            prizeDetail[3].value = r.awardInfo.awardProject;
+            prizeDetail[4].value = r.awardInfo.department;
+            prizeDetail[5].value = r.awardInfo.awardLevel;
+            prizeDetail[6].value = r.awardInfo.rank;
+            prizeDetail[7].value = r.awardInfo.leadTeacher;
+            prizeDetail[8].value = r.awardInfo.joinStudent;
+
+
+            createLi(r.awardInfo.awardName);
+            switchPartContainer(detailIndex++);
 
         }
     }
@@ -455,6 +514,9 @@ function viewPrizeDetail(ID) {
 
     }   
 }
+
+
+
 
 /**
  * 下拉框插件
@@ -520,7 +582,7 @@ function viewPrizeDetail(ID) {
     function queryPrizeByOptions() {
         var prizeUl = document.getElementsByClassName('prize-container')[0].getElementsByTagName('ul')[0];
             optionsSpan = document.getElementsByClassName('option'),
-            options = [];
+            options = new Array();
 
         for (let i = 0; i < optionsSpan.length; i++) {
             if (optionsSpan[i].innerHTML === '所有') {
@@ -534,7 +596,14 @@ function viewPrizeDetail(ID) {
         queryPrizeData.awardTime =  options[0];
         queryPrizeData.awardLevel = options[1];
         queryPrizeData.rank = options[2];
+
+        // 把容器重置为空
         prizeUl.innerHTML = '';
+
+        // 索引重置为0
+        prizeIndex = 0;
+
+        //根据条件查询
         queryMorePrize();
     }
 })();
