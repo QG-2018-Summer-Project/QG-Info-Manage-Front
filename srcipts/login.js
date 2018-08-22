@@ -248,32 +248,7 @@ function loginSubmitCheck() {
     return true;
 }
 
-/**
- * @description 浮出层提示
- * @param {String} text 提示内容
- */
-function showMessage(text) {
-    $('.float-layer span')[0].innerText = text;
-    $('.float-layer').css('display', 'block');
-    setTimeout(function() {
-        if (ClassUtil.hasClass($('.float-layer>div')[0], 'fadeIn') == false) {
-            ClassUtil.addClass($('.float-layer>div')[0], 'fadeIn');
-        }
-    }, 10);
-    /**
-     * @description 关闭浮出层
-     */
-    function closeLayer() {
-        EventUtil.removeHandler($('.float-layer button')[0], 'click', closeLayer);
-        if (ClassUtil.hasClass($('.float-layer>div')[0], 'fadeIn') == true) {
-            ClassUtil.removeClass($('.float-layer>div')[0], 'fadeIn');
-        }
-        setTimeout(function() {
-            $('.float-layer').css('display', 'none');
-        }, 200);
-    }
-    EventUtil.addHandler($('.float-layer button')[0], 'click', closeLayer);
-}
+
 
 /**
  * @description 切换注册或者登录时候控制下拉栏的动画
@@ -350,7 +325,8 @@ function registerRequest() {
  * @description 登录发送请求
  */
 function loginRequest() {
-    var jsonObj = {};
+    var jsonObj = {},
+        message;
 
     jsonObj.userName = $('#login-userName')[0].value;
     jsonObj.password = $('#login-password')[0].value;
@@ -360,12 +336,20 @@ function loginRequest() {
         type: 'post',
         data: JSON.stringify(jsonObj),
         dataType: 'json',
+        crossDomain: true,
+    　　xhrFields: {
+    　　 withCredentials: true
+    　　},
         processData: false,
         contentType: 'application/json',
         success: function(responseObj) {
             switch(responseObj.status) {
                 case '1': {
                     showMessage('登陆成功');
+                    message = encodeURIComponent('userName=' + responseObj.name) + '&' + encodeURI('userPrivilege=' + responseObj.privilege);
+                    encodeURIMessage = encodeURIComponent(message);
+                    url = window.baseUrl + 'index.html?' + encodeURIMessage;
+                    window.location.href = url;
                     break;
                 }
 

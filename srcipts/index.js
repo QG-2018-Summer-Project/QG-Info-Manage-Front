@@ -1,4 +1,25 @@
 /**
+ * @description 根据权限对页面进行初始化,初始化权限和用户名
+ */
+(function() {
+    var message = window.location.search,
+        name,
+        privilege;
+    message = decodeURIComponent(message);
+    privilege = decodeURIComponent(message.split('&')[1]);
+    name = decodeURIComponent(message.split('&')[0]);
+    console.log(privilege.split('=')[1])
+    if (privilege.split('=')[1] == '2') {
+        $('#audit-user').css('display', 'block');
+    } else {
+        $('#audit-user').css('display', 'none');
+    }
+    $('#user-name')[0].innerText = name.split('=')[1];
+})();
+
+
+
+/**
  * 初始化右操作面板功能
  */
 var flag = true;
@@ -539,16 +560,6 @@ function viewPrizeDetail(ID) {
     }
 })();
 
-
-
-(function() {
-    function loadOptionAnimate() {
-        
-    }
-})();
-
-
-
 /**
  * @version 1.1
  * @description 打开查看成员信息时候显示多个成员信息的列表的函数.筛选功能填完整后，将这个筛选的结果放在整个区域类名为member-information-list-container的div中。
@@ -584,7 +595,7 @@ function informationListContainer() {
             i,
             userinfoArr = jsonObj.userInfoList;
         for (i = 0; i < userinfoArr.length; i++) {
-            container.innerHTML += '<li userinfoid=' + userinfoArr[i].userinfoId + '>'
+            container.innerHTML += '<li userinfoid=' + userinfoArr[i].userInfoId + '>'
                                 + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'">'  
                                 + '<div>'
                                 + '<span>'+ userinfoArr[i].name +'</span>'
@@ -616,7 +627,8 @@ function informationListContainer() {
             if ($('.part-left').scrollTop() + $('.part-left')[0].clientHeight - 59 >= parseInt($('.member-information-list-container').css('height')) && 
                 ((event.wheelDelta && event.wheelDelta < 0) || (event.detail && event.detail < 0))) {
                 // 移除鼠标监听事件，避免同一时间多次请求
-                EventUtil.removeHandler($('.part-left')[0], 'mousewheel', loadMoreListen);
+                // EventUtil.removeHandler($('.part-left')[0], 'mousewheel', loadMoreListen);
+                $('.part-left')[0].onmousewheel = null;
                 informationListRequest(group, grade);
             }
         }
@@ -653,7 +665,8 @@ function informationListContainer() {
                         // 请求完毕后统一加一页
                         informationListRenew(responseObj);
                         if (page != 0) {
-                            EventUtil.addHandler($('.part-left')[0], 'mousewheel', loadMoreListen);  // 加载完毕后重新添加点击事件，防止一次请求多次，请求时候立刻移除鼠标事件。
+                            // EventUtil.addHandler($('.part-left')[0], 'mousewheel', loadMoreListen);  // 加载完毕后重新添加点击事件，防止一次请求多次，请求时候立刻移除鼠标事件。
+                            $('.part-left')[0].onmousewheel = loadMoreListen;
                         }
                         page++;
                         break;
@@ -675,7 +688,7 @@ function informationListContainer() {
             },
             error: function() {
                 // 请求失败时要干什么
-                
+                showMessage('请求失败');
             }
         });
     }
@@ -855,7 +868,7 @@ function informationListContainer() {
         var containerTag = null;
         if (event.target.tagName == 'LI') {
             containerTag = event.target;
-            informationDetailRequest(containerTag.getAttribute('userinfoid'));
+            informationDetailRequest(containerTag.getAttribute('userinfoid'));  // 根据
         } else if ($(event.target).parents('li')[0]) {
             containerTag = $(event.target).parents('li')[0];
             // if 
@@ -889,10 +902,11 @@ function informationListContainer() {
 /**
  * @description 查看成员的具体信息的请求函数
  */
-function informationDetailRequest(userinfoId) {
+function informationDetailRequest(userInfoId) {
     var jsonObj = {};
 
-    jsonObj.userinfoId = userinfoId;
+    jsonObj.userInfoId = userInfoId;
+    console.log(jsonObj.userInfoId);
 
     $.ajax({
         url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/getuserinfo',
@@ -904,22 +918,22 @@ function informationDetailRequest(userinfoId) {
         success: function(responseObj) {
             switch(responseObj.status) {
                 case '1': {
-                    showMessage('注册成功');
+                    
                     break;
                 }
 
                 case '2': {
-                    showMessage('该账户已经被注册了');
+                    
                     break;
                 }
 
                 case '7': {
-                    showMessage('服务器发生内部错误');
+                    
                     break;
                 }
 
                 case '9': {
-                    showMessage('发送数据格式错误');
+                    
                     break;
                 }
             }
@@ -927,25 +941,28 @@ function informationDetailRequest(userinfoId) {
         },
         error: function() {
             // 请求失败时要干什么
-            showMessage('请求失败')
+            showMessage('请求失败');
         }
     });
 }
 
 
+
+
 (function() {
+    var chartType = '';
     /**
      * @description 按钮的遮罩层动画
      * @param {DOM Object} target 目标节点标签对象
      */
     function loadOptionAnimate(target, event) {
         // 添加遮罩层动画
-        if (ClassUtil.hasClass(target, 'load-button-active') == false && event.type == 'mouseover') {
-            ClassUtil.addClass(target, 'load-button-active');
+        if ($(target).hasClass('load-button-active') == false && event.type == 'mouseover') {
+            $(target).addClass('load-button-active')
         }
         // 移除遮罩层动画
-        if (ClassUtil.hasClass(target, 'load-button-active') == true && event.type == 'mouseout') {
-            ClassUtil.removeClass(target, 'load-button-active');
+        if ($(target).hasClass('load-button-active') == true && event.type == 'mouseout') {
+            $(target).removeClass('load-button-active');
         }
     }
     EventUtil.addHandler($('.load-button-container')[0], 'mouseover', function(event) {
@@ -975,9 +992,14 @@ function informationDetailRequest(userinfoId) {
         }
     });
 
+    var files = null;
+
+    /**
+     * @description 读取excel表格的函数
+     * @param {String} chartType 读取奖项或者
+     */
     function excelReader(chartType) {
-        var files = null;
-        $('.upload')[0].onchange = function() {
+        $('#upload-button')[0].onchange = function() {
             var fileReader = new FileReader();
             files = this.files;
             fileReader.onload = function (e) {
@@ -985,8 +1007,10 @@ function informationDetailRequest(userinfoId) {
                     workbook = XLSX.read(data, {type: 'binary'}),
                     // 仅仅读取这个文件的第一张sheet表
                     readArr = XLSX.utils.sheet_to_formulae(workbook.Sheets[workbook.SheetNames[0]]);
-                    preViewFiles(chartType, readArr)
+                    preViewFiles(chartType, readArr);
             }
+            // 以二进制方式打开文件
+            fileReader.readAsBinaryString(files[0]);
         }
 
         /**
@@ -996,33 +1020,639 @@ function informationDetailRequest(userinfoId) {
          */
         function preViewFiles(chartType, readArr) {
             var i,
-                headArr = null;
+                checkSpace = null,
+                k,
+                text,
+                col = 0,
+                row = 0,
+                lines,
+                headArr = null,
+                testHeadArr = [];
+
+                // 初始化内容
+                $('.file-preview-head')[0].innerHTML = '';
+                $('.file-preview-value')[0].innerHTML = '';
+
             // 检测表头，需要全部正确
             if (chartType == 'info') {
                 headArr = ['成员名字', '成员组别', '所属学院', '年级', '联系电话', '籍贯', 'QQ账号', '常用邮箱', '简介'];
-                for (i = 0; i < headArr.length; i++) {
-                    if (readArr[i] != headArr[i]) {
-                        alert('请输入正确的表头')
-                        files = null;
-                        return;
+                for (i = 0; i < readArr.length; i++) {
+                    if (parseInt(readArr[i].split("='")[0].slice(1)) == 1) {
+                        testHeadArr.push(readArr[i].split('=\'')[1]);
                     }
                 }
+                if (testHeadArr.length != headArr.length || testHeadArr.toString() != headArr.toString()) {
+                    showMessage('请输入正确的表头')
+                    files = null;
+                    return;
+                }
+
             } else {
-                headArr = ['奖项名称', '获奖时间', '奖项级别', '奖项等级', '授奖部门', '指导老师', '参赛学生', '奖项简介'];
-                for (i = 0; i < headArr.length; i++) {
-                    if (readArr[i] != headArr[i]) {
-                        alert('请输入正确的表头')
-                        files = null;
-                        return;
+                headArr = ['奖项名称', '获奖时间', '奖项级别', '奖项等级', '授奖部门', '指导老师', '参赛学生', '奖项简介', '获奖项目'];
+                for (i = 0; i < readArr.length; i++) {
+                    if (parseInt(readArr[i].split("='")[0].slice(1)) == 1) {
+                        testHeadArr.push(readArr[i].split('=\'')[1]);
                     }
+                }
+                if (testHeadArr.length != headArr.length || testHeadArr.toString() != headArr.toString()) {
+                    showMessage('请输入正确的表头')
+                    files = null;
+                    return;
                 }
             }
-            // 进行预览的填充
+            $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
             for (i = 0; i < headArr.length; i++) {
-                if (readArr[i].slice(1,2) == '1') {
-                    $('.file-preview-head')[0].innerHTML += '<li>'+ readArr[i] +'</li>'
+                $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
+            }
+            // 添加内容
+            // 添加新的一列，来进行添加
+            // 先添加第一列标题头
+            for (i = 1; i <= parseInt(readArr[readArr.length - 1].split("='")[0].slice(1) - 1); i++) {   // 先添加每一列，然后后续再进行添加
+                $('.file-preview-value')[0].innerHTML += '<li><ul><li>'+ i +'</li></ul></li>';
+            }
+            for (i = 0; i < readArr.length; i++) {  // i为数组的下标，要遍历整个数组
+                if (checkSpace != null) {
+                    row = parseInt(readArr[i].split('=\'')[0].slice(1)) - parseInt(checkSpace.slice(1));
+                    col = parseInt(readArr[i].split('=\'')[0].slice(0, 1).charCodeAt(0)) - parseInt(checkSpace.charCodeAt(0));
+                    col = col < 0 ? -col : col;
                 }
+                
+                if (!((row == 1 && col == headArr.length - 1) || (row == 0 && col == 1) || row == 0 && col == 0)) {  // 注意有个非符号，当两个不是相邻的时候  
+                    if (row == 0) {
+                        for (k = 0; k < col - 1; k++) {
+                            $('.file-preview-value li ul')[parseInt(checkSpace.slice(1)) - 2].innerHTML +='<li><li>';
+                            $('.file-preview-value li ul:eq('+ (parseInt(checkSpace.slice(1)) - 2) +')').children('li').last().remove();
+                        }
+                    } else {
+                        // 把所有整一行为空的填满
+                        for (k = parseInt(checkSpace.slice(1)) - 1; k < parseInt(readArr[i].split('=\'')[0].slice(1) - 2); k++) {
+                            for (lines = 0; lines < headArr.length; lines++) {
+                                $('.file-preview-value li ul')[k].innerHTML +='<li><li>';
+                                $('.file-preview-value li ul:eq('+ k +')').children('li').last().remove();
+                            }
+                        }
+                        for (k = 0; k < parseInt(readArr[i].split('=\'')[0].slice(0, 1).charCodeAt(0)) - 'A'.charCodeAt(0); k++) {
+                            // console.log(checkSpace.slice(1));
+                            $('.file-preview-value li ul')[parseInt(readArr[i].split('=\'')[0].slice(1)) - 2].innerHTML +='<li><li>';
+                            $('.file-preview-value li ul:eq('+ (readArr[i].split('=\'')[0].slice(1) - 2) +')').children('li').last().remove();
+                        }
+                    }
+                }
+                // text为某一项的内容，这样的循环为了避免内容有'=''时候被截断了
+                text = '';
+                for (k = 1; k < readArr[i].split('=\'').length; k++) {
+                    text += readArr[i].split('\'')[k];
+                }
+                if (parseInt(readArr[i].split("='")[0].slice(1)) != 1) {  // 去除头一行
+                    $('.file-preview-value li ul')[parseInt(readArr[i].split("='")[0].slice(1)) - 2].innerHTML += '<li>' + text + '</li>';  // 对应编号行下面添加内容,这个是竖着来赋值的
+                    checkSpace = readArr[i].split('=\'')[0];
+                }
+            }
+
+        }
+    }
+
+    /**
+     * @description 对加载页面进行事件监听
+     * @param {object} event 事件监听对象
+     */
+    function loadPageClickListen(event) {
+        var i;
+
+        switch(event.target) {
+            // 对左边栏进行事件监听
+            case $('.load-button-container li>span')[0]:
+            case $('.load-button-container .load-button-layer>span')[0]:
+            case $('.load-button-container .load-button-layer')[0]: {
+                // 转为加载奖项
+                for (i = 0; i < 4; i++) {
+                    if ($('.load-button-container .load-button-layer:eq('+ i +')').hasClass('load-button-choiced') == true) {
+                        $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
+                    }
+                }
+                // ClassUtil.addClass($('.load-button-container .load-button-layer')[0], 'load-button-choiced');
+                $('.load-button-container .load-button-layer:eq(0)').addClass('load-button-choiced')
+                files = null;
+                chartType = 'prize'; // 这个是在点击上传时候判断是否有选择上传的excel表格类型
+                excelReader('prize');
+                break;
+            }
+
+            case $('.load-button-container li>span')[1]:
+            case $('.load-button-container .load-button-layer>span')[1]:
+            case $('.load-button-container .load-button-layer')[1]: {
+                // 转为上传信息的表格
+                for (i = 0; i < 4; i++) {
+                    if ($('.load-button-container .load-button-layer:eq('+ i +')').hasClass('load-button-choiced') == true) {
+                        $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
+                    }
+                }
+                $('.load-button-container .load-button-layer:eq(1)').addClass('load-button-choiced');
+                files = null;
+                chartType = 'info'; // 这个是在点击上传时候判断是否有选择上传的excel表格类型
+                excelReader('info');
+                break;
+            }
+
+            case $('.load-button-container li>span')[2]:
+            case $('.load-button-container .load-button-layer>span')[2]:
+            case $('.load-button-container .load-button-layer')[2]: {
+                // 请求导出奖项表格
+                // ClassUtil.addClass($('.load-button-container .load-button-layer')[2], 'load-button-choiced');
+                exportPrizeRequest();
+                break;
+            }
+
+            case $('.load-button-container li>span')[3]:
+            case $('.load-button-container .load-button-layer>span')[3]:
+            case $('.load-button-container .load-button-layer')[3]: {
+                // 请求导出信息excel表格
+                // ClassUtil.addClass($('.load-button-container .load-button-layer')[3], 'load-button-choiced');
+                exportInfoRequest();
+                break;
+            }
+
+            // 以下为提交表单时候的事件监听
+            case $('#upload-submit')[0]: {
+                // 提交文件上传
+                if (chartType == '') {
+                    showMessage('请选择上传的列表的格式');
+                    return;
+                }
+
+                if (files == null) {
+                    // 未选择上传文件
+                    showMessage('请选择文件上传');
+                    return;
+                }
+                if (chartType == 'info') {
+                    showConfirm('确定上传此信息文件？', uploadInfoRequest.bind(null, files));
+                    // uploadInfoRequest(files);
+                } else if (chartType == 'prize') {
+                    showConfirm('确定上传此信息文件？', uploadPrizeRequest.bind(null, files));
+                    // uploadPrizeRequest(files);
+                }
+                
+                return;
+            }
+
+            case $('#cancel-submit')[0]: {
+                // 取消文件上传
+                // if (files == null) {
+                //     // 未选择上传文件
+                //     console.log('请选择文件上传');
+                //     return;
+                // }
+                files == null;
+                $('.file-preview-head')[0].innerHTML = '';
+                $('.file-preview-value')[0].innerHTML = '';
+                return;
             }
         }
     }
+    /* 导入导出文件的事件监听 */
+    EventUtil.addHandler($('.upload-download-container')[0], 'click', loadPageClickListen);
+
+    /**
+     * @description 上传文件的接口，这个是对奖项的导入
+     * @param {File} file 文件对象的引用
+     */
+    function uploadPrizeRequest(file) {
+        var form = new FormData();
+        // form.append("name", );
+        form.append("file", file[0]);
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/awardinfo/import',
+            type: 'post',
+            data: form,
+            // dataType: 'form/data',
+            processData: false,
+    	    contentType: false,
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        // 上传成功
+                        break;
+                    }
+                }
+                
+            },
+            error: function() {
+                // 请求失败时要干什么
+                
+            }
+        });
+    }
+
+    /**
+     * @description 上传文件的接口,这个是对成员信息的导入
+     * @param {File} file 文件对象的引用
+     */
+    function uploadInfoRequest(file) {
+        var form = new FormData();
+        console.log(file)
+        form.append("file", file[0]);
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/import',
+            type: 'post',
+            data: form,
+            dataType: 'json',
+            processData: false,
+    	    contentType: false,
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        // 上传成功
+                        showMessage('上传成功');
+                        break;
+                    }
+                }
+                
+            },
+            error: function() {
+                // 请求失败时要干什么
+                showMessage('请求失败');
+            }
+        });
+    }
+
+    /**
+     * @description 奖项文件的导出
+     */
+    function exportPrizeRequest() {
+        window.location.href = 'http://'+ window.ip +':8080/qginfosystem/awardinfo/export';
+    }
+
+    /**
+     * @description 成员信息的导出
+     */
+    function exportInfoRequest() {
+        window.location.href = 'http://'+ window.ip +':8080/qginfosystem/userinfo/export';
+    }
 })();
+
+/**
+ * @description 搜索结果页面
+ */
+(function() {
+    var page = 0;
+
+    /**
+     * @description 模糊搜索的函数
+     */
+    function searchRequest() {
+        var jsonObj = {};
+        
+        jsonObj.name = $('#search-input')[0].value;
+        jsonObj.page = page;
+        console.log(jsonObj);
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/user/queryinfo',
+            type: 'post',
+            data: JSON.stringify(jsonObj),
+            dataType: 'json',
+            processData: false,
+            contentType: 'application/json',
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        // 搜索成功执行
+                        if (responseObj.userInfoList.length != 0) { // 创建信息列表
+                            console.log('添加东西')
+                            informationListRenew(responseObj);
+                        }
+                        if (responseObj.awardInfoList.length != 0) {  // 创建奖项列表
+                            prizeListRenew(responseObj.awardInfoList.length, responseObj.awardInfoList);
+                        }
+                        if (page != 0) {
+                            $('.part-left')[0].onmousewheel = searchLoadMore;
+                        }
+                        page++;
+                        break;
+                    }
+
+                    case '10': {
+                        $('.search-container .turn-page-button')[0].innerText = '已经到底了...';
+                        $('.search-container .turn-page-button').css('background-color', '#C1C1C1');
+                        $('.search-container .turn-page-button').css('color', '#424242')
+                        break;
+                    }
+                }
+            },
+            error: function() {
+                // 请求失败时要干什么
+                showMessage('请求失败')
+            }
+        });
+    }
+
+    /**
+     * @description 对列表区进行添加元素
+     * @param {JSON Object} jsonObj 传回的json对象
+     */
+    function informationListRenew(jsonObj) {
+        var container = $('.search-info-list')[0],
+            i,
+            userinfoArr = jsonObj.userInfoList;
+        for (i = 0; i < userinfoArr.length; i++) {
+            container.innerHTML += '<li userinfoid=' + userinfoArr[i].userInfoId + '>'
+                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'">'  
+                                + '<div>'
+                                + '<span>'+ userinfoArr[i].name +'</span>'
+                                + '<span>' + userinfoArr[i].grade + userinfoArr[i].group + '</span>'
+                                + '</div>'
+                                + '</li>'
+        }
+    }
+
+    /**
+     * @description 添加奖项列表的数据
+     * @param {Number} num 返回的数量
+     * @param {*} data 数组
+     */
+    function prizeListRenew(num, data) {
+        var prizeContainer = $('.search-prize-list')[0],
+            prizeUl = prizeContainer.getElementsByTagName('ul')[0];
+        prizeModel = `
+                        <a href="javascript:">
+                            <div class="prize-img-container">
+                                <img src="" class="prize-img">
+                            </div>
+                            <div class="prize-info-container">
+                                <h1 class="prize-name"></h1>
+                                <p class="prize-time-container"><span class="prize-time"></span></p>
+                                <p><span class="prize-people"></span></p>                                
+                            </div>
+                        </a>
+                    `,
+    docFragment = document.createDocumentFragment();
+    console.log(num)
+    for (let i = 0; i < num; i++) {
+
+        newNode = document.createElement('li');
+        newNode.innerHTML = prizeModel;
+
+        docFragment.appendChild(newNode);
+    } 
+    prizeUl.appendChild(docFragment);
+
+    (function addPrize(data) {
+        var prizeLi = prizeUl.getElementsByTagName('li'),
+            prizeImg = prizeUl.getElementsByClassName('prize-img'),
+            prizeName = prizeUl.getElementsByClassName('prize-name'),
+            prizeTime = prizeUl.getElementsByClassName('prize-time'),
+            prizePeople = prizeUl.getElementsByClassName('prize-people'),
+            imgURL;
+
+        for (let i = 0, j = 0; i < num; i++, j++) {
+            imgURL = 'http://' + ip + ':8080/qginfosystem/img/' + data[j].url;
+            prizeLi[i].setAttribute('data-id', data[j].awardId);
+            prizeImg[i].setAttribute('src', imgURL);
+            prizeName[i].innerHTML = data[j].awardName;
+            prizeTime[i].innerHTML = data[j].awardTime;
+            prizePeople[i].innerHTML = data[j].joinStudent;
+
+        }
+
+    })(data);
+    }
+
+    /**
+     * @description 对搜索页面的点击事件进行监听
+     * @param {object} event 搜索页面的事件点击
+     */
+    function searchPageClickListen(event) {
+        // 以下是跳转到其他页面的
+        var containerTag = null;
+        // 当这个点击的目标是成员列表的时候
+        if ($(event.target).parents('.search-info-list')[0]) {  // 当这个点击目标是用户信息列表的时候
+            var containerTag = null;
+            if (event.target.tagName == 'LI') {
+                containerTag = event.target;
+                informationDetailRequest(containerTag.getAttribute('userinfoid'));  // 根据
+            } else if ($(event.target).parents('li')[0]) {
+                containerTag = $(event.target).parents('li')[0];
+                // if 
+                informationDetailRequest(containerTag.getAttribute('userinfoid'));
+            }
+        } 
+        if ($(event.target).parents('.search-prize-list')[0]) {  // 当这个事件目标是奖项列表的时候
+            var containerTag = null;
+            // 需要添加，并不是很明白这个
+        }
+
+    }
+
+    /**
+     * @description 对点击加载更多，第一次点击时候相当于开启开关，然后下次只能通过鼠标滚动来添加事件.建议用DOM0级事件，因为part-left的事件会同时与其它事件触发
+     * @param {object}}} event 添加事件监听
+     */
+    function searchLoadMore(event) {
+        if (event.type == 'click') {
+            // 第一次进行加载更多的时候，对点击事件进行移除
+            EventUtil.removeHandler($('.search-container .turn-page-button')[0], 'click', searchLoadMore);
+            $('.search-container .turn-page-button')[0].innerText = '向下滚动加载更多...';
+            searchRequest()
+        } else {
+            if ($('.part-left').scrollTop() + $('.part-left')[0].clientHeight >= parseInt($('.search-container').css('height')) && 
+                ((event.wheelDelta && event.wheelDelta < 0) || (event.detail && event.detail < 0))) {
+                // 移除鼠标监听事件，避免同一时间多次请求
+                // EventUtil.removeHandler($('.part-left')[0], 'mousewheel', searchLoadMore);
+                $('.part-left')[0].onmousewheel = null;
+                searchRequest();
+            }
+        }
+    }
+    $('.search-container .turn-page-button')[0].onclick = searchLoadMore;  // 添加事件监听
+
+    /**
+     * 搜索事件产生后，更新搜索结果区并显示更多
+     */
+    function searchRenew(event) {
+        // 初始化样式
+        if (event.type == 'click' || (event.type == 'keyup' && event.keyCode == 13)) {
+            page = 0;  // 初始化页面为0;
+            $('.menber-container .turn-page-button')[0].innerText = '点击加载更多...';
+            $('.menber-container .turn-page-button').css('background-color', '#3d90f5');
+            $('.menber-container .turn-page-button').css('color', '#ffffff');
+            $('.search-info-list')[0].innerHTML = '';
+            $('.search-prize-list ul')[0].innerHTML = '';
+            searchRequest();
+        }
+
+    }
+
+    EventUtil.addHandler($('#search-button img')[0], 'click', searchRenew)
+    EventUtil.addHandler($('.search-container')[0], 'click', searchPageClickListen);
+    EventUtil.addHandler($('#search-input')[0], 'keyup', searchRenew);
+})();
+
+/**
+ * @description 审核页面
+ */
+(function() {
+    /**
+     * @description 审核页面的点击事件监听函数
+     * @param {object} event 事件对象
+     */
+    function auditingPageClickListen(event) {
+        var i,
+            resultArr = [];
+        switch(event.target) {
+            case $('#auditing-all-permit')[0]: {
+                // 通过
+                for (i = 0; i < $('.auditing-check-box').length; i++) {
+                    if ($('.auditing-check-box')[i].checked == true) {
+                        resultArr.push({
+                            userName: $('.auditing-check-box:eq('+ i +')').parents('li')[0].getAttribute('userName')
+                        })
+                    }
+                }
+                showConfirm('确定通过所选账户？', auditingRequest.bind(null, 1, resultArr));
+                // auditingRequest(1, resultArr);
+                break;
+            }
+
+            case $('#auditing-all-reject')[0]: {
+                // 不通过
+                for (i = 0; i < $('.auditing-check-box').length; i++) {
+                    if ($('.auditing-check-box')[i].checked == true) {
+                        resultArr.push({
+                            userName: $('.auditing-check-box:eq('+ i +')').parents('li')[0].getAttribute('userName')
+                        })
+                    }
+                }
+                showConfirm('确定不通过所选账户？', auditingRequest.bind(null, 0, resultArr));
+                // auditingRequest(0, resultArr);
+                break;
+            }
+
+            case $('#auditing-all-reset')[0]: {
+                // 重置
+                for (i = 0; i < $('.auditing-check-box').length; i++) {
+                    if ($('.auditing-check-box')[i].checked == true) {
+                        $('.auditing-check-box')[i].checked = false;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    EventUtil.addHandler($('.auditing-container')[0], 'click', auditingPageClickListen);
+
+    /**
+     * @description 审核请求的函数
+     * @param {Number} permitOrnot 允许通过或者不通过 1 为通过 0 为不通过
+     */
+    function auditingRequest(permitOrnot, choiceArray) {
+        var jsonObj = {};
+
+        jsonObj.passOrNot = permitOrnot;
+        jsonObj.userList = choiceArray;
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/user/review',
+            type: 'post',
+            data: JSON.stringify(jsonObj),
+            dataType: 'json',
+            processData: false,
+            crossDomain: true,
+        　　xhrFields: {
+        　　 withCredentials: true
+        　　},
+            contentType: 'application/json',
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        // 处理结果
+                        // 重新发送请求
+                        getAutidingListRequest();
+                        break;
+                    }
+    
+                    case '2': {
+                        
+                        break;
+                    }
+    
+                    case '7': {
+                        
+                        break;
+                    }
+    
+                    case '11': {
+                        showMessage('当前账户没有管理员权限');
+                        break;
+                    }
+                }
+                
+            },
+            error: function() {
+                // 请求失败时要干什么
+                showMessage('请求失败');
+            }
+        });
+    }
+
+    function getAutidingListRequest() {
+        var i,
+            jsonObj = {};
+        
+        jsonObj.userName = '';
+
+        $.ajax({
+            url: 'http://'+ window.ip +':8080/qginfosystem/user/listuser',
+            type: 'post',
+            data: JSON.stringify(jsonObj),
+            crossDomain: true,
+        　　xhrFields: {
+        　　 withCredentials: true
+        　　},
+            dataType: 'json',
+            processData: false,
+            contentType: 'application/json',
+            success: function(responseObj) {
+                switch(responseObj.status) {
+                    case '1': {
+                        // 处理结果
+                        $('.auditing-container .auditing-choice-container>ul')[0].innerHTML = '';
+                        if (responseObj.userList.length != 0) {  // 对列表进行更新
+                            
+                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '未激活用户列表';
+                            for (i = 0; i < responseObj.userList.length; i++) {
+                                $('.auditing-container .auditing-choice-container>ul')[0].innerHTML += '<li userName='+ responseObj.userList[i].userName +'>'
+                                                                                                    +  '<input type="checkbox" class="auditing-check-box">'
+                                                                                                    +  '<span>选择</span>'
+                                                                                                    +  '<span class="auditing-userName">账号： <b>'+ responseObj.userList[i].userName +'</b></span>'
+                                                                                                    +  '<span class="auditing-name">真实姓名：<b>'+ responseObj.userList[i].name +'</b></span>'
+                                                                                                    +  '</li>';
+                            }
+                        } else {
+                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活用户';
+                        }
+                        break;
+                    }
+    
+                    case '10': {
+                        if (responseObj.userList.length == 0) {
+                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活的用户';
+                        }
+                        break;
+                    }
+
+                    case '11': {
+                        showMessage('当前账户没有管理员权限');
+                        break;
+                    }
+                }
+                
+            },
+            error: function() {
+                // 请求失败时要干什么
+                showMessage('请求失败');
+            }
+        });
+    }
+    // getAutidingListRequest();
+})();
+
+

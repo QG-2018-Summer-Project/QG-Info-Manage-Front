@@ -183,12 +183,12 @@ body {
 .part {
     display: none;
 }
-.prize-container ul {
+.prize-container ul,.search-prize-list ul {
     height: auto;
     width: 1000px;
     margin: 0 auto;
 }
-.prize-container li {
+.prize-container li,.search-prize-list li {
     height: auto;
     width: 100%;
     background-color: #fff;
@@ -196,7 +196,7 @@ body {
     box-shadow: 0 4px 4px 2px #eee;
     margin: 30px 0;
 }
-.prize-container a {
+.prize-container a,.search-prize-list a {
     display: block;
     height: auto;
     padding: 20px 10px;
@@ -410,7 +410,7 @@ body {
     width: 60%;
     height: 40px;
     border-radius: 8px;
-    margin: 10px auto;
+    margin: 30px auto;
     line-height: 40px;
     text-align: center;
     font-size: 16px;
@@ -424,7 +424,7 @@ body {
 /* 文件上传下载块↓ */
 
 .upload-download-container {
-    display: block!important;
+    /* display: block!important; */
     width: 100%;
     overflow:  hidden;
 }
@@ -466,6 +466,9 @@ body {
     overflow: hidden;
 }
 .load-button-active {
+    width: 200px;
+}
+.load-button-choiced {
     width: 200px;
 }
 .load-button-layer>span {
@@ -517,9 +520,211 @@ body {
     width: 100px;
     height: 40px;
 }
+.file-control-container {
+    position: relative;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+.file-control-container::after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.file-control-container button {
+    display: block;
+    float: left;
+    font-size: 18px;
+    background-color: #3d90f5;
+    color: #fff;
+    border-radius: 24px;
+    width: 150px;
+    height: 48px;
+    margin-left: 75px;
+}
+.file-control-container button:first-child {
+    margin-left: 0;
+}
+.file-control-container input {
+    position: absolute;
+    cursor: pointer;
+    display: block;
+    left: 0;
+    border-radius: 24px;
+    opacity: 0;
+    width: 150px;
+    height: 48px;
+}
 /* 文件上传下载↑ */
 
+/* 搜索结果↓ */
 
+.search-container {
+    /* display: block!important; */
+    width: 100%;
+    overflow:  hidden;
+}
+.search-info-list::after,.search-prize-list::after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.search-info-list {
+    display: flex;
+    justify-content: center;
+    flex-flow: wrap;
+    top: 12px;
+    left: 0;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.search-info-list li {
+    position: relative;
+    float: left;
+    cursor: pointer;
+    width: 180px;
+    height: 270px;
+    background-color: bisque;
+    margin: 32px 24px;
+    overflow: hidden;
+}
+.search-info-list li img {
+    width: 180px;
+    height: 270px;
+}
+.search-info-list li div {
+    position: absolute;
+    width: 100%;
+    height: 64px;
+    bottom: -32px;
+    left: 0;
+    transition: bottom .5s ease;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.show-member-group {
+    bottom: 0!important;
+}
+.search-info-list li span {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: #424242;
+    line-height: 32px;
+    width: 100%;
+    height: 32px;
+}
+.search-prize-list ul>a {
+    background-color: #fff!important;
+    margin-top: 20px;
+}
+.search-container button:hover {
+    background-color: rgba(61, 144, 245, .6);
+}
+/* 搜索结果↑ */
+
+/* 审核页面↓ */
+
+.auditing-container {
+    display: block!important;
+}
+.auditing-choice-container {
+    width: 800px;
+    border: 4px solid #E0E0E0;
+    margin: 40px auto;
+    overflow: hidden;
+}
+.auditing-choice-container::after {
+    content:"";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.auditing-choice-container li {
+    width: 90%;
+    height: 18px;
+    margin: 10px auto;
+    padding: 15px;
+    border: 2px solid #E0E0E0;
+}
+.auditing-submit-container {
+    width: 510px;
+    height: 48px;
+    margin: 40px auto;
+}
+.auditing-submit-container button {
+    display: block;
+    float: left;
+    margin: 0 10px;
+    background-color: #3d90f5;
+    border-radius: 24px;
+    font-size: 17px;
+    color: #fff;
+    width: 150px;
+    height: 48px;
+}
+.auditing-choice-container li span,.auditing-choice-container input {
+    float: left;
+    display: block;
+}
+.auditing-check-box {
+    margin-top: 4.5px;
+}
+.auditing-name,.auditing-userName {
+    margin-left: 135px;
+}
+.auditing-name b,.auditing-userName b {
+    color: #3d90f5;
+}
+.auditing-choice-container>span {
+    display: block;
+    width: 100%;
+    text-align: center;
+    height: 36px;
+    line-height: 36px;
+    color: #3d90f5;
+}
+.auditing-container button:hover {
+    background-color: rgba(61, 144, 245, .6);
+}
+/* 审核页面↑ */
+
+/* 成员详细页面↓ */
+
+.info-detail-container {
+    display: block!important;
+    overflow: hidden;
+    background-color: #fff;
+}
+.info-container {
+    display: flex;
+    width: 800px;
+    height: 600px;
+    margin: 40px auto;
+    border: 1px solid #e0e0e0;
+}
+.info-container-left {
+    width: 200px;
+    height: 600px;
+    margin-top: 40px;
+    margin-left: 40px;
+}
+.info-container-right {
+    float: left;
+    flex: 1;
+    height: 600px;
+}
+.info-container-right input {
+    background-color: #e0e0e0;
+}
+.head-img-container {
+    width: 270px;
+    height: 180px;
+}
+/* 成员详细页面↑ */
 
 .show-part-right .panel {
     opacity: 1;
@@ -800,3 +1005,70 @@ body {
     font-size: 24px;
 }
 /* 信息展示列表的右边条件分类框↑ */
+
+#audit-user {
+    display: none;
+}
+
+/* 提示浮出层样式↓ */
+
+.float-tips-layer,.float-confirm-layer {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(138, 138, 138, .5);
+}
+.float-tips-layer *,.float-confirm-layer * {
+    transition: all .75s ease;
+}
+.float-tips-layer>div,.float-confirm-layer div {
+    width: 350px;
+    height: 184px;
+    margin: 250px auto;
+    border-radius: 12px;
+    background-color: #fff;
+    overflow: hidden;
+    opacity: 0;
+}
+.fadeIn {
+    opacity: 1!important;
+}
+.float-tips-layer>div>span,.float-confirm-layer>div>span {
+    display: block;
+    width: 100%;
+    height: 25px;
+    margin-top: 40px;
+    font-size: 20px;
+    text-align: center;
+}
+.float-tips-layer>div>button {
+    display: block;
+    width: 160px;
+    height: 48px;
+    margin: 45px auto;
+    border-radius: 8px;
+    background-color: #3d90f5;
+    color: #1f1f1f;
+    color: white;
+}
+.float-tips-layer>div>button:hover,.float-confirm-layer>div>button:hover {
+    background-color: rgba(61, 144, 245, .6);
+}
+.float-confirm-layer>div>button {
+    float: left;
+    width: 110px;
+    height: 42px;
+    border-radius: 8px;
+    background-color: #3d90f5;
+    color: #fff;
+    margin-top: 55px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.confirm-check {
+    margin-left: 54px!important;
+}
+/* 提示浮出层样式↑ */
