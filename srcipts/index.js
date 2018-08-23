@@ -2,21 +2,39 @@
  * @description 根据权限对页面进行初始化,初始化权限和用户名
  */
 (function() {
-    var message = getLoginMessage(),
-        privilege = message[1],
-        name = message[0];
-    if (privilege == '2') {
-        $('#audit-user').css('display', 'block');
-    } else {
-        $('#audit-user').css('display', 'none');
-    }
-    if (name) {
-        $('#user-name')[0].innerText = name;
-    } else {
-        $('#user-name')[0].innerText = '用户名';
-    }
-    
-})();
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/user/getinfo',
+        type: 'post',
+        crossDomain: true,
+    　　xhrFields: {
+    　　 withCredentials: true
+    　　},
+        dataType: 'json',
+        contentType: 'application/json',
+        processData: false,
+        success: function(responseObj) {
+            window.name = responseObj.name;
+            window.privilege = responseObj.privilege;
+            if (window.privilege == 2) {
+                $('#auditing-user').css('display', 'block');
+                $('#import-export').css('display', 'block');
+            } else {
+                $('#auditing-user').css('display', 'none');
+                $('#import-export').css('display', 'none');
+            }
+            if (window.name) {
+                $('#user-name')[0].innerText = name;
+            } else {
+                $('#user-name')[0].innerText = '用户名';
+            }
+            // 预处理详细页面的按钮
+            informationDetailPre();
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败');
+        }
+    });
 
 /**
  * 退出登陆函数
@@ -57,6 +75,7 @@ function getLoginMessage() {
     messageArr.push(privilege);
     return messageArr;
 }
+})();
 
 /**
  * 初始化右操作面板功能
@@ -148,6 +167,9 @@ var firstMenu = document.getElementsByClassName('first-menu')[0];
             if (thisIndex == 0) {
                 initprizeContainer();
             } 
+            if (thisIndex == 3) {
+                getAutidingListRequest();
+            }
             // 切换不同的面板
             switchPartContainer(thisIndex);
         }
@@ -553,11 +575,11 @@ function viewPrizeDetail(ID) {
                 <div class="prize-button-container">
                     <button>
                         <form name="prize-form" enctype="multipart/form-data">
-                            <input type="file" id="prize-upload">
+                            <input type="file" id="prize-upload" accept="image/jpg,image/png,image/png">
                         </form>
                         上传图片
-                    </button id='summit-upload-button'>
-                    <button>确定</button>
+                    </button>
+                    <button id='summit-upload-button'>确定</button>
                 </div>
             </div>
         `;
@@ -565,6 +587,13 @@ function viewPrizeDetail(ID) {
     
     prizeDetailContainer.innerHTML = model;
     
+    var prizeButtonContainer = document.getElementsByClassName('prize-button-container')[0];
+    
+    if (privilege == 2) {
+        prizeButtonContainer.style.display = 'block';
+    } else {
+        prizeButtonContainer.style.display = 'none';
+    }
 
     AjaxUtil.post(prizeInfoURL, {awardId: ID}, 'json', 'application/json', successCallback, errorCallback);
     
@@ -588,41 +617,59 @@ function viewPrizeDetail(ID) {
             prizeDetail[7].value = r.awardInfo.leadTeacher;
             prizeDetail[8].value = r.awardInfo.joinStudent;
 
-            // createLi(r.awardInfo.awardName);
             createLi('奖项详情');
 
             switchPartContainer(5);
+
         }
     }
     function errorCallback() {
         showMessage('网络似乎不太好哦~');
-    }  
+    } 
+
     var summitUploadButton = document.getElementById('summit-upload-button');
-    EventUtil.addHandler(summitUploadButton, 'click', prizeUpload);
+    EventUtil.addHandler(summitUploadButton, 'click', function() {
+        prizeUpload(ID);
+    });
 }
 
- 
 //异步上传功能
-function prizeUpload() { 
-    var file = document.getElementById('prize-upload').file,
+function prizeUpload(ID) { 
+    console.log(ID);
+    var file = document.getElementById('prize-upload'),
         url = 'http://' + ip + ':8080/qginfosystem/awardinfo/modifypicture';
 
     if (file.length != 0) {
         var formdata = new FormData();
 
-        formdata.append("file", file[0]);
+        formdata.append('file', file[0]);
+        formdata.append('awardId', ID);
 
-        AjaxUtil.post(url, formdata, 'json', 'application/json', successCallback, errorCallback);
+        AjaxUtil.post(url, formdata, 'json', 'false', successCallback, errorCallback);
     }  else { 
         showMessage("请先选择文件！");
     }
+    function successCallback(r) {
+        switch(r.status) {
+            case '1': {
+                showMessage('上传成功');
+                break;
+            } case '9': {
+                showMessage('文件格式错误！');
+                break;
+            } case '7': {
+                showMessage('服务器错误');
+            }
+        }
+    }
+    function errorCallback() {
+        showMessage('网络连接失败');
+    }
 }
  
-
 //预览功能
-function picPreview() {
+function picPreview(files) {
     var preImg = document.getElementById("prize-detail-img");
-        file = document.getElementById('prize-upload').file;
 
     if (typeof FileReader != 'undefined') {
         //用于判断是否是图片
@@ -632,15 +679,16 @@ function picPreview() {
             'image/gif' : true
         };
         
-        if (file.length != 0) {
+        if (files.length != 0) {
 
-            if (acceptedTypes[file[0].type] === true) {
+            if (acceptedTypes[files.type] === true) {
                 var reader = new FileReader();
     
                 reader.onload = function (event) {
                     preImg.setAttribute("src", event.target.result);
                 };
-                reader.readAsDataURL(file[0]);
+                reader.readAsDataURL(files);
+
             }  else {
                 console.log("不是图片文件，不支持预览");
                 return;
@@ -648,14 +696,20 @@ function picPreview() {
         }  
     }
 }
-// (function() {
-//     var preContainer = document.getElementById("pre-container");
-//     var fileInput = document.getElementById("prize-upload");
+
+(function() {
+    var fileInput = document.getElementById("prize-upload");
     
-//     fileInput.onchange = function () {    
-//         picPreview();    
-//     };
-// })();
+    fileInput.onchange = function () {   
+        files = this.files[0];
+
+        if (files.size > 5 * 1024 * 1024) {
+            alert("文件过大，请选择比较小的文件上传");
+            return false;
+        } 
+        picPreview(files);    
+    };
+})();
 
 /**
  * 下拉框插件
@@ -790,7 +844,7 @@ function informationListContainer() {
             userinfoArr = jsonObj.userInfoList;
         for (i = 0; i < userinfoArr.length; i++) {
             container.innerHTML += '<li userinfoid=' + userinfoArr[i].userInfoId + '>'
-                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'">'  
+                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'?='+ Math.random() + '">'  
                                 + '<div>'
                                 + '<span>'+ userinfoArr[i].name +'</span>'
                                 + '<span>' + userinfoArr[i].grade + userinfoArr[i].group + '</span>'
@@ -1219,7 +1273,7 @@ function informationDetailRequest(userInfoId) {
                 testHeadArr = [];
 
                 // 初始化内容
-                $('.file-preview-head')[0].innerHTML = '';
+                // $('.file-preview-head')[0].innerHTML = '';
                 $('.file-preview-value')[0].innerHTML = '';
 
             // 检测表头，需要全部正确
@@ -1248,10 +1302,6 @@ function informationDetailRequest(userInfoId) {
                     files = null;
                     return;
                 }
-            }
-            $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
-            for (i = 0; i < headArr.length; i++) {
-                $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
             }
             // 添加内容
             // 添加新的一列，来进行添加
@@ -1319,6 +1369,15 @@ function informationDetailRequest(userInfoId) {
                         $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
                     }
                 }
+                $('.file-preview-value')[0].innerHTML = '';
+                $('.file-preview-head')[0].innerHTML = '';
+                headArr = ['奖项名称', '获奖时间', '奖项级别', '奖项等级', '授奖部门', '指导老师', '参赛学生', '奖项简介', '获奖项目'];
+                $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
+                for (i = 0; i < headArr.length; i++) {
+                    $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
+                }
+
+
                 // ClassUtil.addClass($('.load-button-container .load-button-layer')[0], 'load-button-choiced');
                 $('.load-button-container .load-button-layer:eq(0)').addClass('load-button-choiced')
                 files = null;
@@ -1336,7 +1395,15 @@ function informationDetailRequest(userInfoId) {
                         $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
                     }
                 }
+                $('.file-preview-value')[0].innerHTML = '';
+                $('.file-preview-head')[0].innerHTML = '';
                 $('.load-button-container .load-button-layer:eq(1)').addClass('load-button-choiced');
+                headArr = ['成员名字', '成员组别', '所属学院', '年级', '联系电话', '籍贯', 'QQ账号', '常用邮箱', '简介'];
+                $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
+                for (i = 0; i < headArr.length; i++) {
+                    $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
+                }
+
                 files = null;
                 chartType = 'info'; // 这个是在点击上传时候判断是否有选择上传的excel表格类型
                 excelReader('info');
@@ -1540,7 +1607,7 @@ function informationDetailRequest(userInfoId) {
             userinfoArr = jsonObj.userInfoList;
         for (i = 0; i < userinfoArr.length; i++) {
             container.innerHTML += '<li userinfoid=' + userinfoArr[i].userInfoId + '>'
-                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'">'  
+                                + '<img src="http://'+ window.ip +':8080/qginfosystem/userImg/'+ userinfoArr[i].url +'?='+ Math.random() +'">'  
                                 + '<div>'
                                 + '<span>'+ userinfoArr[i].name +'</span>'
                                 + '<span>' + userinfoArr[i].grade + userinfoArr[i].group + '</span>'
@@ -1692,6 +1759,10 @@ function informationDetailRequest(userInfoId) {
                         })
                     }
                 }
+                if (resultArr.length == 0) {
+                    showMessage('请选择要审核的用户');
+                    return;
+                }
                 showConfirm('确定通过所选账户？', auditingRequest.bind(null, 1, resultArr));
                 // auditingRequest(1, resultArr);
                 break;
@@ -1705,6 +1776,10 @@ function informationDetailRequest(userInfoId) {
                             userName: $('.auditing-check-box:eq('+ i +')').parents('li')[0].getAttribute('userName')
                         })
                     }
+                }
+                if (resultArr.length == 0) {
+                    showMessage('请选择要审核的用户');
+                    return;
                 }
                 showConfirm('确定不通过所选账户？', auditingRequest.bind(null, 0, resultArr));
                 // auditingRequest(0, resultArr);
@@ -1777,67 +1852,72 @@ function informationDetailRequest(userInfoId) {
         });
     }
 
-    function getAutidingListRequest() {
-        var i,
-            jsonObj = {};
-        
-        jsonObj.userName = '';
 
-        $.ajax({
-            url: 'http://'+ window.ip +':8080/qginfosystem/user/listuser',
-            type: 'post',
-            data: JSON.stringify(jsonObj),
-            crossDomain: true,
-        　　xhrFields: {
-        　　 withCredentials: true
-        　　},
-            dataType: 'json',
-            processData: false,
-            contentType: 'application/json',
-            success: function(responseObj) {
-                switch(responseObj.status) {
-                    case '1': {
-                        // 处理结果
-                        $('.auditing-container .auditing-choice-container>ul')[0].innerHTML = '';
-                        if (responseObj.userList.length != 0) {  // 对列表进行更新
-                            
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '未激活用户列表';
-                            for (i = 0; i < responseObj.userList.length; i++) {
-                                $('.auditing-container .auditing-choice-container>ul')[0].innerHTML += '<li userName='+ responseObj.userList[i].userName +'>'
-                                                                                                    +  '<input type="checkbox" class="auditing-check-box">'
-                                                                                                    +  '<span>选择</span>'
-                                                                                                    +  '<span class="auditing-userName">账号： <b>'+ responseObj.userList[i].userName +'</b></span>'
-                                                                                                    +  '<span class="auditing-name">真实姓名：<b>'+ responseObj.userList[i].name +'</b></span>'
-                                                                                                    +  '</li>';
-                            }
-                        } else {
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活用户';
-                        }
-                        break;
-                    }
-    
-                    case '10': {
-                        if (responseObj.userList.length == 0) {
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活的用户';
-                        }
-                        break;
-                    }
-
-                    case '11': {
-                        showMessage('当前账户没有管理员权限');
-                        break;
-                    }
-                }
-                
-            },
-            error: function() {
-                // 请求失败时要干什么
-                showMessage('请求失败');
-            }
-        });
-    }
     // getAutidingListRequest();
 })();
+
+/**
+ * 请求拿到审核列表
+ */
+function getAutidingListRequest() {
+    var i,
+        jsonObj = {};
+    
+    jsonObj.userName = '';
+
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/user/listuser',
+        type: 'post',
+        data: JSON.stringify(jsonObj),
+        crossDomain: true,
+    　　xhrFields: {
+    　　 withCredentials: true
+    　　},
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        success: function(responseObj) {
+            switch(responseObj.status) {
+                case '1': {
+                    // 处理结果
+                    $('.auditing-container .auditing-choice-container>ul')[0].innerHTML = '';
+                    if (responseObj.userList.length != 0) {  // 对列表进行更新
+                        
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '未激活用户列表';
+                        for (i = 0; i < responseObj.userList.length; i++) {
+                            $('.auditing-container .auditing-choice-container>ul')[0].innerHTML += '<li userName='+ responseObj.userList[i].userName +'>'
+                                                                                                +  '<input type="checkbox" class="auditing-check-box">'
+                                                                                                +  '<span>选择</span>'
+                                                                                                +  '<span class="auditing-userName">账号： <b>'+ responseObj.userList[i].userName +'</b></span>'
+                                                                                                +  '<span class="auditing-name">真实姓名：<b>'+ responseObj.userList[i].name +'</b></span>'
+                                                                                                +  '</li>';
+                        }
+                    } else {
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活用户';
+                    }
+                    break;
+                }
+
+                case '10': {
+                    if (responseObj.userList.length == 0) {
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活的用户';
+                    }
+                    break;
+                }
+
+                case '11': {
+                    showMessage('当前账户没有管理员权限');
+                    break;
+                }
+            }
+            
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败');
+        }
+    });
+}
 
 /**
  * @description 更新用户头像
@@ -1895,7 +1975,7 @@ function infoDetailPageRenew(jsonObj) {
     $inputs[6].value = userInfoObj.qq;
     $inputs[7].value = userInfoObj.email;
     $('#info-introduction')[0].value = userInfoObj.description;
-    $('.head-img-container>img').attr('src', 'http://'+ window.ip +':8080/qginfosystem/userImg/' + userInfoObj.url);
+    $('.head-img-container>img').attr('src', 'http://'+ window.ip +':8080/qginfosystem/userImg/' + userInfoObj.url + '?='+ Math.random());
     $('.info-container').attr('userinfo', userInfoObj.userInfoId);
 }
 
@@ -1903,26 +1983,11 @@ function infoDetailPageRenew(jsonObj) {
  * @description 对用户详情页进行页面的监听及初始化
  */
 (function() {
-    var message = getLoginMessage(),
-        privilege = message[1],
-        upload = $('#upload-headPic')[0],
+    var upload = $('#upload-headPic')[0],
         files = null,
         $image = $('.head-img-container>img');
     
-    if (privilege == '1') {
-        for (i = 0; i < $('.info-container-right li').length; i++) {
-            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
-        }
-        $('.info-detail-button-container').css('display', 'none');
-        $('#info-introduction').attr('disabled', true);
-        $('.info-introduction-container').css('background-color', '#EBEBE4');
-    } else {
-        for (i = 0; i < $('.info-container-right li').length; i++) {
-            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
-        }
-        $('#info-introduction').attr('disabled', true);
-        $('.info-introduction-container').css('background-color', '#EBEBE4');
-    }
+
     
     function infoDetailPageClickListen(event) {
         switch(event.target) {
@@ -1956,3 +2021,20 @@ function infoDetailPageRenew(jsonObj) {
         }
     }
 })();
+function informationDetailPre() {
+    console.log()
+    if (window.privilege == 1) {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
+        $('.info-detail-button-container').css('display', 'none');
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    } else {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    }
+}

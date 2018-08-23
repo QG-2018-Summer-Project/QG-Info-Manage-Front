@@ -189,9 +189,7 @@ body {
 
 /* 奖项列表 */
 
-.prize-container {
-   
-}
+
 .part {
     display: none;
 }
@@ -454,9 +452,6 @@ body {
     color: #fff;
     background-color: #3d90f5;
 }
-.turn-page-button:hover {
-    /* background-color:  */
-}
 
 /* 文件上传下载块↓ */
 
@@ -665,8 +660,6 @@ body {
 
 /* 审核页面↓ */
 
-.auditing-container {
-}
 .auditing-choice-container {
     width: 800px;
     border: 4px solid #E0E0E0;
