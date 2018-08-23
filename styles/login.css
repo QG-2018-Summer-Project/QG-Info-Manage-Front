@@ -223,7 +223,7 @@ section  * {
     top: 381.5px;
 }
 /* 浮出层 */
-.float-layer {
+.float-tips-layer {
     position: fixed;
     display: none;
     width: 100%;
@@ -232,10 +232,10 @@ section  * {
     left: 0;
     background-color: rgba(138, 138, 138, .5);
 }
-.float-layer * {
+.float-tips-layer * {
     transition: all .75s ease;
 }
-.float-layer>div {
+.float-tips-layer>div {
     width: 350px;
     height: 184px;
     margin: 250px auto;
@@ -247,7 +247,7 @@ section  * {
 .fadeIn {
     opacity: 1!important;
 }
-.float-layer>div>span {
+.float-tips-layer>div>span {
     display: block;
     width: 100%;
     height: 25px;
@@ -255,7 +255,7 @@ section  * {
     font-size: 20px;
     text-align: center;
 }
-.float-layer>div>button {
+.float-tips-layer>div>button {
     display: block;
     width: 160px;
     height: 48px;
@@ -265,6 +265,6 @@ section  * {
     color: #1f1f1f;
     color: white;
 }
-.float-layer>div>button:hover {
+.float-tips-layer>div>button:hover {
     background-color: rgba(61, 144, 245, .6);
 }

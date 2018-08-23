@@ -921,7 +921,6 @@ function informationDetailRequest(userInfoId) {
     var jsonObj = {};
 
     jsonObj.userInfoId = userInfoId;
-    console.log(jsonObj.userInfoId);
 
     $.ajax({
         url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/getuserinfo',
@@ -934,7 +933,9 @@ function informationDetailRequest(userInfoId) {
             switch(responseObj.status) {
                 case '1': {
                     // 更新详细页面
-                    infoDetailPageRenew(responseObj)
+                    infoDetailPageRenew(responseObj);
+                    // 进行页面的跳转
+
                     break;
                 }
 
@@ -1668,10 +1669,8 @@ function informationDetailRequest(userInfoId) {
  */
 function setHeadPicRequest(file, userInfo) {
     var form = new FormData();
-
     form.append('picture', file);
     form.append('userInfoId', userInfo);
-
     $.ajax({
         url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/modifypicture',
         type: 'post',
@@ -1718,7 +1717,7 @@ function infoDetailPageRenew(jsonObj) {
     $inputs[6].value = userInfoObj.qq;
     $inputs[7].value = userInfoObj.email;
     $('#info-introduction')[0].value = userInfoObj.description;
-    $('.head-img-container>img').attr('src', userInfoObj.url);
+    $('.head-img-container>img').attr('src', 'http://'+ window.ip +':8080/qginfosystem/userImg/' + userInfoObj.url);
     $('.info-container').attr('userinfo', userInfoObj.userInfoId);
 }
 
@@ -1737,6 +1736,12 @@ function infoDetailPageRenew(jsonObj) {
             $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
         }
         $('.info-detail-button-container').css('display', 'none');
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    } else {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
         $('#info-introduction').attr('disabled', true);
         $('.info-introduction-container').css('background-color', '#EBEBE4');
     }
