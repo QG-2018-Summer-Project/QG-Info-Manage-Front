@@ -1067,8 +1067,8 @@ body {
     transition: all .75s ease;
 }
 .float-tips-layer>div,.float-confirm-layer div {
-    width: 350px;
-    height: 184px;
+    width: 280px;
+    height: 180px;
     margin: 250px auto;
     border-radius: 12px;
     background-color: #fff;
@@ -1082,15 +1082,15 @@ body {
     display: block;
     width: 100%;
     height: 25px;
-    margin-top: 40px;
+    margin-top: 47px;
     font-size: 20px;
     text-align: center;
 }
 .float-tips-layer>div>button {
     display: block;
-    width: 160px;
-    height: 48px;
-    margin: 45px auto;
+    width: 110px;
+    height: 38px;
+    margin: 53px auto;
     border-radius: 8px;
     background-color: #3d90f5;
     color: #1f1f1f;
@@ -1101,8 +1101,8 @@ body {
 }
 .float-confirm-layer>div>button {
     float: left;
-    width: 110px;
-    height: 42px;
+    width: 78px;
+    height: 40px;
     border-radius: 8px;
     background-color: #3d90f5;
     color: #fff;

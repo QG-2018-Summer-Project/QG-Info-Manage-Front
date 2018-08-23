@@ -301,7 +301,7 @@ function initprizeContainer() {
         }
     }
     function errorCallback() {
-        alert("网络状况好像不太好~");
+        showMessage("网络状况好像不太好~");
     }
 }
 
@@ -333,9 +333,8 @@ function queryMorePrize() {
         }
     }
     function errorCallback() {
-        alert("网络状态似乎不太好");
-    }
-    
+        showMessage("网络状态似乎不太好");
+    }  
 }
 
 /**
