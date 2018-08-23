@@ -90,42 +90,22 @@
                             <button id="cancel-submit">取消上传</button>
                         </div>
                     </div>
-                    
-                    <!-- 奖项的操作页面 -->
-                    <div class="part prizeDetailContainer">
-                        奖项的操作页面
-                    </div>
-                    <!-- < 成员详细信息页面 > -->
-                    <div class="part info-detail-container">
-                        <div class="info-container">
-                            <div class="info-container-left">
-                                <div class="head-img-container">
-                                    <img src="../images/logo/studio_logo_information.png">
-                                </div>
-                                <div class="info-introduction-container">
-                                    <span>个人简介</span>
-                                    <textarea id="info-introduction"></textarea>
-                                </div>
-                            </div>
-                            <ul class="info-container-right">
-                                <li><label>成员名字</label><input id=""></li>
-                                <li><label>成员组别</label><input id=""></li>
-                                <li><label>所属学院</label><input id=""></li>
-                                <li><label>年级</label><input id=""></li>
-                                <li><label>联系电话</label><input id=""></li>
-                                <li><label>籍贯</label><input id=""></li>
-                                <li><label>QQ账号</label><input id=""></li>
-                                <li><label>常用邮箱</label><input id=""></li>
-                                <div class="info-detail-button-container">
-                                    <button>上传图片</button>
-                                    <input type="file" id="upload-headPic" accept="image/jpg,image/png,image/png">
-                                    <button>确定修改</button>
-                                </div>
+                     <!-- 审核页面 -->
+                     <div class="part auditing-container" data-index="3">
+                        <div class="auditing-choice-container">
+                            <span>没有未激活用户</span>
+                            <ul>
+                               
                             </ul>
                         </div>
+                        <div class="auditing-submit-container">
+                            <button id="auditing-all-permit">通过</button>
+                            <button id="auditing-all-reject">不通过</button>
+                            <button id="auditing-all-reset">选择重置</button>
+                         </div>
                     </div>
-                    <!-- < 搜索页面 > -->
-                    <div class="part search-container">
+                    <!--  搜索页面  -->
+                    <div class="part search-container" data-index="4">
                         <div class="search-info-list">
                             <li>
                                 <img src="../images/logo/studio_logo_information.png">
@@ -185,20 +165,38 @@
                         </div>
                         <div class="turn-page-button">点击此加载更多...</div>
                     </div>
-                    <!-- < 审核页面 > -->
-                    <div class="part auditing-container">
-                        <div class="auditing-choice-container">
-                            <span>没有未激活用户</span>
-                            <ul>
-                               
+                    <!-- 详细操作页面 -->
+                    <div class="part prize-detail-container" data-index="5"></div>
+                    <!--  成员详细信息页面  -->
+                    <div class="part info-detail-container" data-index="6">
+                        <div class="info-container">
+                            <div class="info-container-left">
+                                <div class="head-img-container">
+                                    <img src="../images/logo/studio_logo_information.png">
+                                </div>
+                                <div class="info-introduction-container">
+                                    <span>个人简介</span>
+                                    <textarea id="info-introduction"></textarea>
+                                </div>
+                            </div>
+                            <ul class="info-container-right">
+                                <li><label>成员名字</label><input id=""></li>
+                                <li><label>成员组别</label><input id=""></li>
+                                <li><label>所属学院</label><input id=""></li>
+                                <li><label>年级</label><input id=""></li>
+                                <li><label>联系电话</label><input id=""></li>
+                                <li><label>籍贯</label><input id=""></li>
+                                <li><label>QQ账号</label><input id=""></li>
+                                <li><label>常用邮箱</label><input id=""></li>
+                                <div class="info-detail-button-container">
+                                    <button>上传图片</button>
+                                    <input type="file" id="upload-headPic" accept="image/jpg,image/png,image/png">
+                                    <button>确定修改</button>
+                                </div>
                             </ul>
                         </div>
-                        <div class="auditing-submit-container">
-                            <button id="auditing-all-permit">通过</button>
-                            <button id="auditing-all-reject">不通过</button>
-                            <button id="auditing-all-reset">选择重置</button>
-                         </div>
                     </div>
+                    
                 </main>
             </section>
             <section class="part-right">
