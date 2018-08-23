@@ -1727,7 +1727,7 @@ function informationDetailRequest(userInfoId) {
             }
         });
     }
-    // getAutidingListRequest();
+    getAutidingListRequest();
 })();
 
 /**

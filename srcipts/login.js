@@ -349,7 +349,7 @@ function loginRequest() {
                     message = encodeURIComponent('userName=' + responseObj.name) + '&' + encodeURI('userPrivilege=' + responseObj.privilege);
                     encodeURIMessage = encodeURIComponent(message);
                     url = window.baseUrl + 'index.html?' + encodeURIMessage;
-                    window.location.href = url;
+                    // window.location.href = url;
                     break;
                 }
 

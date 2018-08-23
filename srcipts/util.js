@@ -1,4 +1,4 @@
-window.ip = '192.168.1.106';
+window.ip = '192.168.31.248';
 window.baseUrl = '';
 
 /**
