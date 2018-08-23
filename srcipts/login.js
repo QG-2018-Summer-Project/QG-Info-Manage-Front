@@ -346,10 +346,10 @@ function loginRequest() {
             switch(responseObj.status) {
                 case '1': {
                     showMessage('登陆成功');
-                    message = encodeURIComponent('userName=' + responseObj.name) + '&' + encodeURI('userPrivilege=' + responseObj.privilege);
-                    encodeURIMessage = encodeURIComponent(message);
-                    url = window.baseUrl + 'index.html?' + encodeURIMessage;
-                    window.location.href = url;
+                    // message = encodeURIComponent('userName=' + responseObj.name) + '&' + encodeURI('userPrivilege=' + responseObj.privilege);
+                    // encodeURIMessage = encodeURIComponent(message);
+                    // url = window.baseUrl + 'index.html?' + encodeURIMessage;
+                    window.location.href = 'index.html?';
                     break;
                 }
 

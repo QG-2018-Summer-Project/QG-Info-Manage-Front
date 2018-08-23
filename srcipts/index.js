@@ -2,37 +2,41 @@
  * @description 根据权限对页面进行初始化,初始化权限和用户名
  */
 (function() {
-    var message = getLoginMessage(),
-        privilege = message[1],
-        name = message[0];
-    if (privilege == '2') {
-        $('#audit-user').css('display', 'block');
-    } else {
-        $('#audit-user').css('display', 'none');
-    }
-    if (name) {
-        $('#user-name')[0].innerText = name;
-    } else {
-        $('#user-name')[0].innerText = '用户名';
-    }
-    
-})();
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/user/getinfo',
+        type: 'post',
+        crossDomain: true,
+    　　xhrFields: {
+    　　 withCredentials: true
+    　　},
+        dataType: 'json',
+        contentType: 'application/json',
+        processData: false,
+        success: function(responseObj) {
+            window.name = responseObj.name;
+            window.privilege = responseObj.privilege;
+            if (window.privilege == 2) {
+                $('#auditing-user').css('display', 'block');
+                $('#import-export').css('display', 'block');
+            } else {
+                $('#auditing-user').css('display', 'none');
+                $('#import-export').css('display', 'none');
+            }
+            if (window.name) {
+                $('#user-name')[0].innerText = name;
+            } else {
+                $('#user-name')[0].innerText = '用户名';
+            }
+            // 预处理详细页面的按钮
+            informationDetailPre();
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败');
+        }
+    });
 
-/**
- * @description 得到登录信息
- */
-function getLoginMessage() {
-    var message = window.location.search,
-        name,
-        privilege,
-        messageArr = [];
-    message = decodeURIComponent(message);
-    privilege = decodeURIComponent(message.split('&')[1]).split('=')[1];
-    name = decodeURIComponent(message.split('&')[0]).split('=')[1];
-    messageArr.push(name);
-    messageArr.push(privilege);
-    return messageArr;
-}
+})();
 
 /**
  * 初始化右操作面板功能
@@ -124,6 +128,9 @@ var firstMenu = document.getElementsByClassName('first-menu')[0];
             if (thisIndex == 0) {
                 initprizeContainer();
             } 
+            if (thisIndex == 3) {
+                getAutidingListRequest();
+            }
             // 切换不同的面板
             switchPartContainer(thisIndex);
         }
@@ -1312,7 +1319,7 @@ function informationDetailRequest(userInfoId) {
                 testHeadArr = [];
 
                 // 初始化内容
-                $('.file-preview-head')[0].innerHTML = '';
+                // $('.file-preview-head')[0].innerHTML = '';
                 $('.file-preview-value')[0].innerHTML = '';
 
             // 检测表头，需要全部正确
@@ -1341,10 +1348,6 @@ function informationDetailRequest(userInfoId) {
                     files = null;
                     return;
                 }
-            }
-            $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
-            for (i = 0; i < headArr.length; i++) {
-                $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
             }
             // 添加内容
             // 添加新的一列，来进行添加
@@ -1412,6 +1415,15 @@ function informationDetailRequest(userInfoId) {
                         $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
                     }
                 }
+                $('.file-preview-value')[0].innerHTML = '';
+                $('.file-preview-head')[0].innerHTML = '';
+                headArr = ['奖项名称', '获奖时间', '奖项级别', '奖项等级', '授奖部门', '指导老师', '参赛学生', '奖项简介', '获奖项目'];
+                $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
+                for (i = 0; i < headArr.length; i++) {
+                    $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
+                }
+
+
                 // ClassUtil.addClass($('.load-button-container .load-button-layer')[0], 'load-button-choiced');
                 $('.load-button-container .load-button-layer:eq(0)').addClass('load-button-choiced')
                 files = null;
@@ -1429,7 +1441,15 @@ function informationDetailRequest(userInfoId) {
                         $('.load-button-container .load-button-layer:eq('+ i +')').removeClass('load-button-choiced')
                     }
                 }
+                $('.file-preview-value')[0].innerHTML = '';
+                $('.file-preview-head')[0].innerHTML = '';
                 $('.load-button-container .load-button-layer:eq(1)').addClass('load-button-choiced');
+                headArr = ['成员名字', '成员组别', '所属学院', '年级', '联系电话', '籍贯', 'QQ账号', '常用邮箱', '简介'];
+                $('.file-preview-head')[0].innerHTML += '<li>序号</li>';
+                for (i = 0; i < headArr.length; i++) {
+                    $('.file-preview-head')[0].innerHTML +='<li>'+ headArr[i] +'</li>';
+                }
+
                 files = null;
                 chartType = 'info'; // 这个是在点击上传时候判断是否有选择上传的excel表格类型
                 excelReader('info');
@@ -1785,6 +1805,10 @@ function informationDetailRequest(userInfoId) {
                         })
                     }
                 }
+                if (resultArr.length == 0) {
+                    showMessage('请选择要审核的用户');
+                    return;
+                }
                 showConfirm('确定通过所选账户？', auditingRequest.bind(null, 1, resultArr));
                 // auditingRequest(1, resultArr);
                 break;
@@ -1798,6 +1822,10 @@ function informationDetailRequest(userInfoId) {
                             userName: $('.auditing-check-box:eq('+ i +')').parents('li')[0].getAttribute('userName')
                         })
                     }
+                }
+                if (resultArr.length == 0) {
+                    showMessage('请选择要审核的用户');
+                    return;
                 }
                 showConfirm('确定不通过所选账户？', auditingRequest.bind(null, 0, resultArr));
                 // auditingRequest(0, resultArr);
@@ -1870,67 +1898,72 @@ function informationDetailRequest(userInfoId) {
         });
     }
 
-    function getAutidingListRequest() {
-        var i,
-            jsonObj = {};
-        
-        jsonObj.userName = '';
 
-        $.ajax({
-            url: 'http://'+ window.ip +':8080/qginfosystem/user/listuser',
-            type: 'post',
-            data: JSON.stringify(jsonObj),
-            crossDomain: true,
-        　　xhrFields: {
-        　　 withCredentials: true
-        　　},
-            dataType: 'json',
-            processData: false,
-            contentType: 'application/json',
-            success: function(responseObj) {
-                switch(responseObj.status) {
-                    case '1': {
-                        // 处理结果
-                        $('.auditing-container .auditing-choice-container>ul')[0].innerHTML = '';
-                        if (responseObj.userList.length != 0) {  // 对列表进行更新
-                            
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '未激活用户列表';
-                            for (i = 0; i < responseObj.userList.length; i++) {
-                                $('.auditing-container .auditing-choice-container>ul')[0].innerHTML += '<li userName='+ responseObj.userList[i].userName +'>'
-                                                                                                    +  '<input type="checkbox" class="auditing-check-box">'
-                                                                                                    +  '<span>选择</span>'
-                                                                                                    +  '<span class="auditing-userName">账号： <b>'+ responseObj.userList[i].userName +'</b></span>'
-                                                                                                    +  '<span class="auditing-name">真实姓名：<b>'+ responseObj.userList[i].name +'</b></span>'
-                                                                                                    +  '</li>';
-                            }
-                        } else {
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活用户';
-                        }
-                        break;
-                    }
-    
-                    case '10': {
-                        if (responseObj.userList.length == 0) {
-                            $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活的用户';
-                        }
-                        break;
-                    }
-
-                    case '11': {
-                        showMessage('当前账户没有管理员权限');
-                        break;
-                    }
-                }
-                
-            },
-            error: function() {
-                // 请求失败时要干什么
-                showMessage('请求失败');
-            }
-        });
-    }
-    getAutidingListRequest();
+    // getAutidingListRequest();
 })();
+
+/**
+ * 请求拿到审核列表
+ */
+function getAutidingListRequest() {
+    var i,
+        jsonObj = {};
+    
+    jsonObj.userName = '';
+
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/user/listuser',
+        type: 'post',
+        data: JSON.stringify(jsonObj),
+        crossDomain: true,
+    　　xhrFields: {
+    　　 withCredentials: true
+    　　},
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        success: function(responseObj) {
+            switch(responseObj.status) {
+                case '1': {
+                    // 处理结果
+                    $('.auditing-container .auditing-choice-container>ul')[0].innerHTML = '';
+                    if (responseObj.userList.length != 0) {  // 对列表进行更新
+                        
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '未激活用户列表';
+                        for (i = 0; i < responseObj.userList.length; i++) {
+                            $('.auditing-container .auditing-choice-container>ul')[0].innerHTML += '<li userName='+ responseObj.userList[i].userName +'>'
+                                                                                                +  '<input type="checkbox" class="auditing-check-box">'
+                                                                                                +  '<span>选择</span>'
+                                                                                                +  '<span class="auditing-userName">账号： <b>'+ responseObj.userList[i].userName +'</b></span>'
+                                                                                                +  '<span class="auditing-name">真实姓名：<b>'+ responseObj.userList[i].name +'</b></span>'
+                                                                                                +  '</li>';
+                        }
+                    } else {
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活用户';
+                    }
+                    break;
+                }
+
+                case '10': {
+                    if (responseObj.userList.length == 0) {
+                        $('.auditing-container .auditing-choice-container>span')[0].innerText = '没有未激活的用户';
+                    }
+                    break;
+                }
+
+                case '11': {
+                    showMessage('当前账户没有管理员权限');
+                    break;
+                }
+            }
+            
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败');
+        }
+    });
+}
 
 /**
  * @description 更新用户头像
@@ -1996,26 +2029,11 @@ function infoDetailPageRenew(jsonObj) {
  * @description 对用户详情页进行页面的监听及初始化
  */
 (function() {
-    var message = getLoginMessage(),
-        privilege = message[1],
-        upload = $('#upload-headPic')[0],
+    var upload = $('#upload-headPic')[0],
         files = null,
         $image = $('.head-img-container>img');
     
-    if (privilege == '1') {
-        for (i = 0; i < $('.info-container-right li').length; i++) {
-            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
-        }
-        $('.info-detail-button-container').css('display', 'none');
-        $('#info-introduction').attr('disabled', true);
-        $('.info-introduction-container').css('background-color', '#EBEBE4');
-    } else {
-        for (i = 0; i < $('.info-container-right li').length; i++) {
-            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
-        }
-        $('#info-introduction').attr('disabled', true);
-        $('.info-introduction-container').css('background-color', '#EBEBE4');
-    }
+
     
     function infoDetailPageClickListen(event) {
         switch(event.target) {
@@ -2049,3 +2067,20 @@ function infoDetailPageRenew(jsonObj) {
         }
     }
 })();
+function informationDetailPre() {
+    console.log()
+    if (window.privilege == 1) {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
+        $('.info-detail-button-container').css('display', 'none');
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    } else {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    }
+}
