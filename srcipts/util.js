@@ -140,34 +140,7 @@ function getNowTime() {
     return (year + '-' + month + '-' + day);
 }
 
-/**
- * 弹出提示层
- * DATE 20180803
- * @author czf
- * @param {string} text 要显示的提示信息
- * @param {function} commiitCallback 点击确认的时候执行的函数
- */
-function showPop(text, commitCallback) {
-    var popContainer = document.getElementsByClassName('pop-container')[0],
-        popContent = document.getElementsByClassName('pop-content')[0];
-        realLength = arguments.length;
 
-    popContent.innerHTML = text;
-    addClass(popContainer, 'active-pop');
-
-    var popButton = document.getElementsByClassName('pop-button');
-
-    EventUtil.addHandler(popButton[0], 'click', function() {
-        removeClass(popContainer, 'active-pop');
-    });
-    
-    EventUtil.addHandler(popButton[1], 'click', function() {
-        removeClass(popContainer, 'active-pop');
-        if (realLength > 1) {
-            commitCallback();
-        } 
-    });
-}
 /**
  * 
  * @param {Function} fun 函数
@@ -233,7 +206,7 @@ function ajax() {
         type: 'post',
         data: JSON.stringify(jsonObj),
         dataType: 'json',
-        
+        cache: false,
         processData: false,
         contentType: 'application/json',
         success: function(responseObj) {

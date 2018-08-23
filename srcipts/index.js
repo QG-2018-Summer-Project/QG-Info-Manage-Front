@@ -19,6 +19,30 @@
 })();
 
 /**
+ * 退出登陆函数
+ */
+(function() {
+    var logoutButton = document.getElementById('logout-button'),
+        url = 'http://' + ip + ':8080/qginfosysterm/user/quit';
+
+    logoutButton.onclick = function() {
+        showConfirm('确认退出?', function() {
+            AjaxUtil.post(url, '', 'json', 'application/json', successCallback, errorCallback);
+        });
+    };
+    function successCallback(r) {
+        if (r.status === '1') {
+            showConfirm('退出成功', function(){
+                window.href = 'login.html';
+            });
+        }
+    }
+    function errorCallback() {
+        showMessage('网络似乎不太好~');
+    }
+
+})();
+/**
  * @description 得到登录信息
  */
 function getLoginMessage() {
@@ -443,7 +467,7 @@ function createPrize(num, data) {
             imgURL;
 
         for (let i = prizeIndex, j = 0; i <  prizeIndex + num; i++, j++) {
-            imgURL = 'http://' + ip + ':8080/qginfosystem/img/' + data[j].url;
+            imgURL = 'http://' + ip + ':8080/qginfosystem/img/' + data[j].url + '?=' + Math.random();
             prizeLi[i].setAttribute('data-id', data[j].awardId);
             prizeImg[i].setAttribute('src', imgURL);
             prizeName[i].innerHTML = data[j].awardName;
@@ -707,14 +731,20 @@ function viewPrizeDetail(ID) {
                     </li>
                 </ul>
                 <div class="prize-button-container">
-                    <button>修改</button>
-                    <button>删除</button>
+                    <button>
+                        <form name="prize-form" enctype="multipart/form-data">
+                            <input type="file" id="prize-upload">
+                        </form>
+                        上传图片
+                    </button id='summit-upload-button'>
+                    <button>确定</button>
                 </div>
             </div>
         `;
     var prizeInfoURL = 'http://' + ip + ':8080/qginfosystem/awardinfo/getawardinfo';
     
     prizeDetailContainer.innerHTML = model;
+    
 
     AjaxUtil.post(prizeInfoURL, {awardId: ID}, 'json', 'application/json', successCallback, errorCallback);
     
@@ -723,7 +753,7 @@ function viewPrizeDetail(ID) {
             var prizeDetailImg = document.getElementById('prize-detail-img'),
                 introduction = document.getElementById('introduction'),
                 prizeDetail = document.getElementsByClassName('prize-detail-input');
-                imgURL = 'http://' + ip +':8080/qginfosystem/img/' + r.awardInfo.url;
+                imgURL = 'http://' + ip +':8080/qginfosystem/img/' + r.awardInfo.url + '?=' + Math.random();
 
             //填充信息
             prizeDetailImg.setAttribute('src', imgURL);
@@ -746,9 +776,66 @@ function viewPrizeDetail(ID) {
     }
     function errorCallback() {
         showMessage('网络似乎不太好哦~');
-    }   
+    }  
+    var summitUploadButton = document.getElementById('summit-upload-button');
+    EventUtil.addHandler(summitUploadButton, 'click', prizeUpload);
 }
 
+ 
+//异步上传功能
+function prizeUpload() { 
+    var file = document.getElementById('prize-upload').file,
+        url = 'http://' + ip + ':8080/qginfosystem/awardinfo/modifypicture';
+
+    if (file.length != 0) {
+        var formdata = new FormData();
+
+        formdata.append("file", file[0]);
+
+        AjaxUtil.post(url, formdata, 'json', 'application/json', successCallback, errorCallback);
+    }  else { 
+        showMessage("请先选择文件！");
+    }
+}
+ 
+
+//预览功能
+function picPreview() {
+    var preImg = document.getElementById("prize-detail-img");
+        file = document.getElementById('prize-upload').file;
+
+    if (typeof FileReader != 'undefined') {
+        //用于判断是否是图片
+        var acceptedTypes = {
+            'image/png' : true,
+            'image/jpeg': true,
+            'image/gif' : true
+        };
+        
+        if (file.length != 0) {
+
+            if (acceptedTypes[file[0].type] === true) {
+                var reader = new FileReader();
+    
+                reader.onload = function (event) {
+                    preImg.setAttribute("src", event.target.result);
+                };
+                reader.readAsDataURL(file[0]);
+            }  else {
+                console.log("不是图片文件，不支持预览");
+                return;
+            }
+        }  
+    }
+}
+// (function() {
+//     var preContainer = document.getElementById("pre-container");
+//     var fileInput = document.getElementById("prize-upload");
+    
+//     fileInput.onchange = function () {    
+//         picPreview();    
+//     };
+// })();
 
 /**
  * 下拉框插件
