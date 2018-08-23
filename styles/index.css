@@ -5,6 +5,7 @@ body {
 .root { 
     height: 100%;
     width: 100%;
+    min-width: 1245px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -34,13 +35,14 @@ body {
 
 .search-input-container {
     height: 38px;
-    width: auto;
+    width: 380px;
     border: 4px solid rgba(61, 144, 245, .8);
     border-radius: 7px;
+    position: relative;
 }
 .search-input-container input {
     height: 28px;
-    width: 370px;
+    width: 80%;
     padding: 5px 16px;
     font-size: 1.1em;
 }
@@ -48,10 +50,16 @@ body {
     color: #8a8a8a;
     font-weight: 600;
 }
-.search-input-container img {
+.search-input-container a {
     height: 25px;
     width: 25px;
-    padding-right: 16px;
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    right: 10px;
+}
+.search-input-container img {
+    height: 100%;
 }
 .header-ul {
     height: auto;
@@ -124,6 +132,7 @@ body {
     float: left;
     margin: 0 5px;
     position: relative;
+    overflow: hidden;
 }
 
 /* 处于激活状态的样式 */
@@ -140,17 +149,19 @@ body {
 .first-menu a {
     display: block;
     height: 100%;
-    width: 100%;
+    width: 66%;
+    font-size: .9em;
+    margin: 0 auto;
 }
 .close-button {
-    height: 12px;
-    width: 12px;
+    height: 20px;
+    width: 20px;
     background: url(../images/icon/cross_normal.png) no-repeat center;
-    background-size: contain;
+    background-size: 12px;
     position: absolute;
     top: 50%;
-    margin-top: -6px;
-    right: 12px;
+    margin-top: -11px;
+    right: 6px;
 }
 .root-main {
     width: 100%;
@@ -217,6 +228,28 @@ body {
 
     display: inline-block;
     vertical-align: middle;
+}
+
+.more-prize-button-container {
+    height: auto;
+    width: 100%;
+    text-align: center;
+    margin: 50px 0;
+    
+}
+.more-prize-button-container button {
+    height: 40px;
+    width: 500px;
+    
+    border-radius: 6px;
+    color: #3d90f5;
+    font-size: 1.1em;
+    transition: background-color .6s, color .6s;
+    background-color: transparent;
+}
+.more-prize-button-container button:hover {
+    background-color: #3d90f5;
+    color: #fff;
 }
 
 /* 奖项详细页面 */
@@ -963,45 +996,53 @@ body {
 
 .info-list-panel {
     position: relative;
-    width: 480px;
+    width: 100%;
     height: 400px;
 }
 .info-list-panel span {
     display: block;
     float: left;
-    font-size: 20px;
+    font-size: 1.2em;
     color: #3d90f5;
 }
 .condition-container {
-    width: 336px;
+    width: 300px;
     height: 56px;
     margin: 40px auto;
+    text-align: center;
 }
 .condition-container>span {
     height: 56px;
     width: 100px;
     line-height: 56px;
     text-align: center;
+
 }
 .swtich-select-container {
-    float: left;
+    display: inline-block;
     cursor: pointer;
-    width: 192px;
-    height: 48px;
+    width: 130px;
+    height: 32px;
     margin-left: 32px;
     border: 4px solid #9EC7FA;
     border-radius: 8px;
+    margin: 10px 0 ;
+    position: relative;
+    font-size: .9em;
 }
 .swtich-select-container>span {
     /* width: 100px; */
-    height: 48px;
+    height: 32px;
     margin-left: 36px;
-    line-height: 48px;
+    line-height: 32px;
 }
 .swtich-select-container>img {
-    display: block;
-    float: right;
-    margin: 16px 16px;
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    top: 0;
+    top: 9px;
+    right: 15px;
 }
 .info-select-list {
     position: absolute;
@@ -1048,8 +1089,9 @@ body {
     position: relative;
     float: right;
     margin-top: 40px;
-    width: 320px;
+    width: 275px;
     height: 72px;
+    text-align: center;
 }
 .info-button-container span {
     cursor: pointer;
@@ -1073,14 +1115,14 @@ body {
     overflow: hidden;
 }
 .info-button-layer-animate {
-    width: 320px;
+    width: 275px;
 }
 .info-button-layer>span {
     position: absolute;
     width: 48px;
     height: 72px;
     line-height: 72px;
-    right: 222px;
+    right: 180px;
     color: #fff;
     font-size: 24px;
 }
@@ -1105,8 +1147,8 @@ body {
     transition: all .75s ease;
 }
 .float-tips-layer>div,.float-confirm-layer div {
-    width: 350px;
-    height: 184px;
+    width: 280px;
+    height: 180px;
     margin: 250px auto;
     border-radius: 12px;
     background-color: #fff;
@@ -1120,15 +1162,15 @@ body {
     display: block;
     width: 100%;
     height: 25px;
-    margin-top: 40px;
+    margin-top: 47px;
     font-size: 20px;
     text-align: center;
 }
 .float-tips-layer>div>button {
     display: block;
-    width: 160px;
-    height: 48px;
-    margin: 45px auto;
+    width: 110px;
+    height: 38px;
+    margin: 53px auto;
     border-radius: 8px;
     background-color: #3d90f5;
     color: #1f1f1f;
@@ -1139,8 +1181,8 @@ body {
 }
 .float-confirm-layer>div>button {
     float: left;
-    width: 110px;
-    height: 42px;
+    width: 78px;
+    height: 40px;
     border-radius: 8px;
     background-color: #3d90f5;
     color: #fff;
