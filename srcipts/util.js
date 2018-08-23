@@ -1,4 +1,4 @@
-window.ip = '192.168.1.106';
+window.ip = '192.168.31.88';
 window.baseUrl = '';
 
 /**
@@ -233,6 +233,7 @@ function ajax() {
         type: 'post',
         data: JSON.stringify(jsonObj),
         dataType: 'json',
+        
         processData: false,
         contentType: 'application/json',
         success: function(responseObj) {
