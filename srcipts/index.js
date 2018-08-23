@@ -2,22 +2,37 @@
  * @description 根据权限对页面进行初始化,初始化权限和用户名
  */
 (function() {
-    var message = window.location.search,
-        name,
-        privilege;
-    message = decodeURIComponent(message);
-    privilege = decodeURIComponent(message.split('&')[1]);
-    name = decodeURIComponent(message.split('&')[0]);
-    console.log(privilege.split('=')[1])
-    if (privilege.split('=')[1] == '2') {
+    var message = getLoginMessage(),
+        privilege = message[1],
+        name = message[0];
+    if (privilege == '2') {
         $('#audit-user').css('display', 'block');
     } else {
         $('#audit-user').css('display', 'none');
     }
-    $('#user-name')[0].innerText = name.split('=')[1];
+    if (name) {
+        $('#user-name')[0].innerText = name;
+    } else {
+        $('#user-name')[0].innerText = '用户名';
+    }
+    
 })();
 
-
+/**
+ * @description 得到登录信息
+ */
+function getLoginMessage() {
+    var message = window.location.search,
+        name,
+        privilege,
+        messageArr = [];
+    message = decodeURIComponent(message);
+    privilege = decodeURIComponent(message.split('&')[1]).split('=')[1];
+    name = decodeURIComponent(message.split('&')[0]).split('=')[1];
+    messageArr.push(name);
+    messageArr.push(privilege);
+    return messageArr;
+}
 
 /**
  * 初始化右操作面板功能
@@ -918,17 +933,8 @@ function informationDetailRequest(userInfoId) {
         success: function(responseObj) {
             switch(responseObj.status) {
                 case '1': {
-                    
-                    break;
-                }
-
-                case '2': {
-                    
-                    break;
-                }
-
-                case '7': {
-                    
+                    // 更新详细页面
+                    infoDetailPageRenew(responseObj)
                     break;
                 }
 
@@ -1438,7 +1444,7 @@ function informationDetailRequest(userInfoId) {
         } 
         if ($(event.target).parents('.search-prize-list')[0]) {  // 当这个事件目标是奖项列表的时候
             var containerTag = null;
-            // 需要添加，并不是很明白这个
+            // 需要添加，这个是跳转到奖项列表的函数
         }
 
     }
@@ -1655,4 +1661,115 @@ function informationDetailRequest(userInfoId) {
     // getAutidingListRequest();
 })();
 
+/**
+ * @description 更新用户头像
+ * @param {file} file 文件对象
+ * @param {String} userInfo 用户的账号
+ */
+function setHeadPicRequest(file, userInfo) {
+    var form = new FormData();
 
+    form.append('picture', file);
+    form.append('userInfoId', userInfo);
+
+    $.ajax({
+        url: 'http://'+ window.ip +':8080/qginfosystem/userinfo/modifypicture',
+        type: 'post',
+        data: form,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(responseObj) {
+            switch(responseObj.status) {
+                case '1': {
+                    // 上传成功
+                    showMessage('上传成功');
+                    break;
+                }
+
+                case '9': {
+                    showMessage('图片格式应为png/jpg');
+                    break;
+                }
+            }
+            
+        },
+        error: function() {
+            // 请求失败时要干什么
+            showMessage('请求失败');
+        }
+    });
+}
+
+/**
+ * @description 对个人信息详细页面进行初始化
+ * @param {object} jsonObj 
+ */
+function infoDetailPageRenew(jsonObj) {
+    var $inputs = $('.info-container-right li input'),
+        userInfoObj = jsonObj.userInfo;
+
+    $inputs[0].value = userInfoObj.name;
+    $inputs[1].value = userInfoObj.group;
+    $inputs[2].value = userInfoObj.college;
+    $inputs[3].value = userInfoObj.grade;
+    $inputs[4].value = userInfoObj.tel;
+    $inputs[5].value = userInfoObj.birthplace;
+    $inputs[6].value = userInfoObj.qq;
+    $inputs[7].value = userInfoObj.email;
+    $('#info-introduction')[0].value = userInfoObj.description;
+    $('.head-img-container>img').attr('src', userInfoObj.url);
+    $('.info-container').attr('userinfo', userInfoObj.userInfoId);
+}
+
+/**
+ * @description 对用户详情页进行页面的监听及初始化
+ */
+(function() {
+    var message = getLoginMessage(),
+        privilege = message[1],
+        upload = $('#upload-headPic')[0],
+        files = null,
+        $image = $('.head-img-container>img');
+    
+    if (privilege == '1') {
+        for (i = 0; i < $('.info-container-right li').length; i++) {
+            $('.info-container-right li input:eq('+ i +')').attr('disabled', true);
+        }
+        $('.info-detail-button-container').css('display', 'none');
+        $('#info-introduction').attr('disabled', true);
+        $('.info-introduction-container').css('background-color', '#EBEBE4');
+    }
+    
+    function infoDetailPageClickListen(event) {
+        switch(event.target) {
+            case $('.info-detail-button-container button')[0] : {
+                // 上传图片
+
+                break;
+            }
+
+            case $('.info-detail-button-container button')[1]: {
+                // 确定上传
+                var userInfo = $('.info-container').attr('userinfo');
+                setHeadPicRequest(files, userInfo);
+                break;
+            }
+        }
+    }
+
+    EventUtil.addHandler($('.info-container')[0], 'click', infoDetailPageClickListen);
+
+    upload.onchange = function() {
+        files = this.files[0];
+        if (files.size > 5 * 1024 * 1024) {
+            alert("文件过大，请选择比较小的文件上传");
+            return false;
+        }
+        fileRead = new FileReader();
+        fileRead.readAsDataURL(files);
+        fileRead.onload = function() {
+            $image.attr('src', this.result);
+        }
+    }
+})();

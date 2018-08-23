@@ -702,27 +702,107 @@ body {
 .info-container {
     display: flex;
     width: 800px;
-    height: 600px;
+    height: 550px;
     margin: 40px auto;
     border: 1px solid #e0e0e0;
 }
 .info-container-left {
-    width: 200px;
-    height: 600px;
+    width: 270px;
+    height: 550px;
     margin-top: 40px;
     margin-left: 40px;
 }
 .info-container-right {
     float: left;
-    flex: 1;
+    /* flex: 1; */
     height: 600px;
 }
 .info-container-right input {
     background-color: #e0e0e0;
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 370px;
+    height: 36px;
+    font-size: 16px;
+    text-indent: 10px;
+    color: #1f1f1f;
 }
 .head-img-container {
-    width: 270px;
-    height: 180px;
+    width: 240px;
+    height: 270px;
+}
+.head-img-container>img {
+    display: block;
+    width: 180px;
+    height: 270px;
+    margin: 0 auto;
+}
+.info-introduction-container {
+    position: relative;
+    margin-top: 30px;
+    width: 240px;
+    height: 150px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+
+}
+.info-introduction-container textarea {
+    width: 230px;
+    height: 140px;
+    /* padding: 10px; */
+    margin: 5px;
+    resize: none;
+    font-size: 16px;
+    border: 0;
+    outline: none;
+}
+.info-introduction-container span {
+    position: absolute;
+    top: -25px;
+}
+.info-container-right label {
+    display: block;
+    float: left;
+    margin-top: 20px;
+    width: 60px;
+    height: 38px;
+    line-height: 38px;
+}
+.info-container-right li {
+    width: 100%;
+    height: 58px;
+}
+.info-detail-button-container {
+    position: relative;
+    margin-top: 20px;
+    margin-left: 130px;
+    width: 265px;
+    height: 46px;
+}
+.info-detail-button-container button {
+    width: 100px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #3d90f5;
+    margin: 10px 15px;
+}
+.info-detail-button-container button:hover {
+    background-color: rgba(61, 144, 245, .6);
+}
+.info-detail-button-container>input {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    z-index: 1;
+    opacity: 0;
+    width: 100px;
+    height: 38px;
+    top: -10px;
+    left: -5px;
+    border-radius: 8px;
 }
 /* 成员详细页面↑ */
 
